@@ -1,0 +1,6 @@
+SmagerUp Core (SUC)
+Copyright © 2025 German Fuentes. All rights reserved.
+
+This project is proprietary software. 
+Unauthorized copying, modification, or distribution is strictly prohibited.
+Contact: gm_fuentes@yahoo.com for licensing inquiries.
