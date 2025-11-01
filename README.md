@@ -35,7 +35,3 @@ Each module or library hosted in SUC is versioned, licensed (free or paid), and 
   - SUS connects to SUC via REST API
   - Authenticated module download and rendering
 
----
-
-## 🧠 System Architecture
-
