@@ -12,6 +12,12 @@ namespace SmagerUp.Core.API.Data
             _db = db;
         }
 
+        public async Task<string?> GetLicenseNameAsync(int licenseTypeId)
+        {
+            const string sql = "SELECT Name FROM LicenseTypes WHERE LicenseTypeId = @id;";
+            using var conn = _db.CreateConnection();
+            return await conn.QueryFirstOrDefaultAsync<string?>(sql, new { id = licenseTypeId });
+        }
         public async Task<IEnumerable<LicenseType>> GetAllAsync()
         {
             const string sql = "SELECT * FROM LicenseTypes ORDER BY CreatedAt DESC";

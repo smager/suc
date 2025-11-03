@@ -37,10 +37,12 @@ builder.Services.AddAuthentication(options =>
 // ✅ Dependency Injection
 builder.Services.AddSingleton<DapperContext>();
 builder.Services.AddScoped<AccountRepository>();
-builder.Services.AddScoped<ModuleRepository>();
-builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<LicenseTypeRepository>();
-builder.Services.AddScoped<AccountLicenseRepository>();
+builder.Services.AddScoped<ModuleRepository>();
+builder.Services.AddScoped<ContentRepository>();
+builder.Services.AddScoped<TokenService>();
+//builder.Services.AddScoped<AccountLicenseRepository>();
+
 
 // ✅ CORS Policy
 builder.Services.AddCors(p =>

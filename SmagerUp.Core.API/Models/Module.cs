@@ -1,13 +1,14 @@
-﻿namespace SmagerUp.Core.API.Models;
-
-public class Module
+﻿namespace SmagerUp.Core.API.Models
 {
-    public int ModuleId { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public string Version { get; set; } = string.Empty;
-    public string Code { get; set; } = string.Empty;
-    public string Description { get; set; } = string.Empty;
-    public decimal Price { get; set; }
-    public bool IsActive { get; set; }
-    public int LicenseId { get; set; }
+    public class Module
+    {
+        public Guid ModuleId { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Version { get; set; } = string.Empty;
+        public int LicenseTypeId { get; set; }
+        public decimal Price { get; set; }
+        public Guid? ContentGroupId { get; set; } // new FK
+        public bool IsActive { get; set; }
+        public DateTime CreatedAt { get; set; }
+    }
 }
