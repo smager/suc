@@ -1,7 +1,17 @@
 # 🧩 SmagerUp Core (SUC)
 
-**SmagerUp Core (SUC)** is the central backend platform of the SmagerUp ecosystem.  
-It securely hosts, licenses, and manages JavaScript modules and libraries used by **SmagerUp Studio (SUS)** — the visual app builder.
+**SmagerUp Core (SUC)** is the backbone of the **SmagerUp ecosystem**, responsible for managing and licensing modular web components — from JavaScript logic to HTML and CSS content. It powers **SmagerUp Studio (SUS)** by providing secure, versioned, and license-aware content delivery through a unified API.
+
+---
+
+## 🚀 Key Features
+
+- 🔐 **JWT Authentication** — Secure token-based access for SmagerUp Studio clients.  
+- 📦 **Modular Content Management** — Hosts JavaScript, HTML, and CSS modules with version control.  
+- 🧾 **License Enforcement** — Supports free, paid, and commercial-use licensing per module.  
+- ⚙️ **Dapper-based Data Layer** — High-performance and lightweight SQL access.  
+- 🌐 **Unified API Response** — Standardized success/fail structure across all endpoints.  
+- 🧩 **Integration Ready** — Designed for seamless communication with SmagerUp Studio (SUS).  
 
 ---
 
