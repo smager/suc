@@ -8,8 +8,8 @@ VALUES
 ('grid','1.0.0','/* minified grid code */','Basic grid module',1,0),
 ('chart-advanced','2.0.0','/* minified chart code */','Advanced charts',2,99.0);
 
-INSERT INTO Accounts (Name,ApiKey)
-VALUES ('smager.dev','v0rqU9/59fLeUJtVdJ+6Pg==');
+INSERT INTO Accounts (FirstName,LastName,ApiKey)
+VALUES ('German','Fuentes','v0rqU9/59fLeUJtVdJ+6Pg==');
 
 DECLARE @acc UNIQUEIDENTIFIER=(SELECT TOP 1 AccountId FROM Accounts);
 INSERT INTO UserModules (AccountId,ModuleId) SELECT @acc,ModuleId FROM Modules WHERE Price=0;

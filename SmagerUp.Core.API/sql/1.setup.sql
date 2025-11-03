@@ -3,72 +3,215 @@ GO
 USE SmagerUpCore;
 GO
 
-CREATE TABLE LicenseTypes (
-    LicenseTypeId INT IDENTITY(1,1) PRIMARY KEY,
-    Name NVARCHAR(50) NOT NULL,              -- e.g. "Trial", "Pro", "Enterprise"
-    Type NVARCHAR(50) NOT NULL,              -- e.g. "Subscription", "Lifetime", etc.
-    BodyContent NVARCHAR(MAX) NULL,          -- full license text or HTML content
-    CreatedAt DATETIME NOT NULL DEFAULT GETDATE()
-);
+USE [SmagerUpCore]
+GO
+
+/****** Object:  Table [dbo].[Modules]    Script Date: 11/3/2025 9:45:31 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[Modules](
+	[ModuleId] [uniqueidentifier] NOT NULL,
+	[Name] [nvarchar](100) NOT NULL,
+	[Version] [nvarchar](20) NOT NULL,
+	[LicenseTypeId] [int] NOT NULL,
+	[Price] [decimal](10, 2) NOT NULL,
+	[ContentGroupId] [uniqueidentifier] NULL,
+	[IsActive] [bit] NOT NULL,
+	[CreatedAt] [datetime] NOT NULL,
+ CONSTRAINT [PK_Modules] PRIMARY KEY CLUSTERED 
+(
+	[ModuleId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[Modules] ADD  CONSTRAINT [DF__Modules__ModuleId]  DEFAULT (newid()) FOR [ModuleId]
+GO
+
+ALTER TABLE [dbo].[Modules] ADD  CONSTRAINT [DF__Modules__Price]  DEFAULT ((0.00)) FOR [Price]
+GO
+
+ALTER TABLE [dbo].[Modules] ADD  CONSTRAINT [DF__Modules__IsActive]  DEFAULT ((1)) FOR [IsActive]
+GO
+
+ALTER TABLE [dbo].[Modules] ADD  CONSTRAINT [DF__Modules__CreatedAt]  DEFAULT (getdate()) FOR [CreatedAt]
+GO
+
+ALTER TABLE [dbo].[Modules]  WITH CHECK ADD  CONSTRAINT [FK_Modules_ContentGroups] FOREIGN KEY([ContentGroupId])
+REFERENCES [dbo].[ContentGroups] ([ContentGroupId])
+GO
+
+ALTER TABLE [dbo].[Modules] CHECK CONSTRAINT [FK_Modules_ContentGroups]
+GO
+
+ALTER TABLE [dbo].[Modules]  WITH CHECK ADD  CONSTRAINT [FK_Modules_LicenseTypes] FOREIGN KEY([LicenseTypeId])
+REFERENCES [dbo].[LicenseTypes ] ([LicenseTypeId])
+GO
+
+ALTER TABLE [dbo].[Modules] CHECK CONSTRAINT [FK_Modules_LicenseTypes]
+GO
 
 
-CREATE TABLE [dbo].[Modules] (
-    [ModuleId] UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),        -- Primary Key
-    [Name] NVARCHAR(100) NOT NULL,                               -- Module name (e.g., "grid", "chart")
-    [Version] NVARCHAR(20) NOT NULL,                             -- Version string (e.g., "1.0.0")
-    [LicenseTypeId] INT NOT NULL,                                -- FK to LicenseTypes table
-    [Price] DECIMAL(10,2) NOT NULL DEFAULT 0.00,                 -- 0 = Free
-    [ContentGroupId] UNIQUEIDENTIFIER NULL,                      -- FK to ContentGroups
-    [IsActive] BIT NOT NULL DEFAULT 1,                           -- Active status
-    [CreatedAt] DATETIME NOT NULL DEFAULT GETDATE(),             -- Creation timestamp
+/****** Object:  Table [dbo].[Accounts]    Script Date: 11/3/2025 9:43:29 PM ******/
+SET ANSI_NULLS ON
+GO
 
-    CONSTRAINT [PK_Modules] PRIMARY KEY CLUSTERED ([ModuleId] ASC),
+SET QUOTED_IDENTIFIER ON
+GO
 
-    CONSTRAINT [FK_Modules_LicenseTypes]
-        FOREIGN KEY ([LicenseTypeId]) REFERENCES [dbo].[LicenseTypes]([LicenseTypeId]),
+CREATE TABLE [dbo].[Accounts](
+	[AccountId] [uniqueidentifier] NOT NULL,
+	[FirstName] [nvarchar](100) NOT NULL,
+	[LastName] [nvarchar](100) NULL,
+	[EmailAdd] [nvarchar](255) NULL,
+	[ApiKey] [nvarchar](255) NOT NULL,
+	[CreatedDate] [datetime] NULL,
+ CONSTRAINT [PK__Accounts__AccountId] PRIMARY KEY CLUSTERED 
+(
+	[AccountId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+ CONSTRAINT [UQ_Accounts_ApiKey] UNIQUE NONCLUSTERED 
+(
+	[ApiKey] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
 
-    CONSTRAINT [FK_Modules_ContentGroups]
-        FOREIGN KEY ([ContentGroupId]) REFERENCES [dbo].[ContentGroups]([ContentGroupId])
-);
+ALTER TABLE [dbo].[Accounts] ADD  CONSTRAINT [DF__Accounts__AccountId]  DEFAULT (newid()) FOR [AccountId]
+GO
 
--- Ensure fast lookups for name and version combinations
-CREATE UNIQUE INDEX IX_Modules_Name_Version
-ON [dbo].[Modules] ([Name], [Version]);
+ALTER TABLE [dbo].[Accounts] ADD  CONSTRAINT [DF__Accounts__CreateAt]  DEFAULT (getdate()) FOR [CreatedDate]
+GO
 
--- Optional: for filtering by license type (e.g., getting all free modules)
-CREATE INDEX IX_Modules_LicenseTypeId
-ON [dbo].[Modules] ([LicenseTypeId]);
+/****** Object:  Table [dbo].[AccountModules]    Script Date: 11/3/2025 9:43:11 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[AccountModules](
+	[AccountModuleId] [uniqueidentifier] NOT NULL,
+	[AccountId] [uniqueidentifier] NOT NULL,
+	[ModuleId] [uniqueidentifier] NULL,
+	[ExpiryDate] [datetime] NULL,
+	[IsActive] [bit] NULL,
+	[CreatedAt] [datetime] NULL,
+ CONSTRAINT [PK__AccountModules] PRIMARY KEY CLUSTERED 
+(
+	[AccountModuleId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[AccountModules] ADD  CONSTRAINT [DF__AccountMo__AccountModuleId]  DEFAULT (newid()) FOR [AccountModuleId]
+GO
+
+ALTER TABLE [dbo].[AccountModules] ADD  CONSTRAINT [DF__AccountMo__IsActive]  DEFAULT ((1)) FOR [IsActive]
+GO
+
+ALTER TABLE [dbo].[AccountModules] ADD  CONSTRAINT [DF__AccountMo__CreatedAt]  DEFAULT (getdate()) FOR [CreatedAt]
+GO
+
+ALTER TABLE [dbo].[AccountModules]  WITH CHECK ADD  CONSTRAINT [FK_AccountModules_Accounts] FOREIGN KEY([AccountId])
+REFERENCES [dbo].[Accounts] ([AccountId])
+GO
+
+ALTER TABLE [dbo].[AccountModules] CHECK CONSTRAINT [FK_AccountModules_Accounts]
+GO
+
+/****** Object:  Table [dbo].[LicenseTypes ]    Script Date: 11/3/2025 9:45:20 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[LicenseTypes ](
+	[LicenseTypeId] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](50) NOT NULL,
+	[Type] [nvarchar](50) NOT NULL,
+	[BodyContent] [nvarchar](max) NULL,
+	[CreatedAt] [datetime] NULL,
+ CONSTRAINT [PK__LicenseTypes] PRIMARY KEY CLUSTERED 
+(
+	[LicenseTypeId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[LicenseTypes ] ADD  CONSTRAINT [DF_LicenseTypes _CreatedAt]  DEFAULT (getdate()) FOR [CreatedAt]
+GO
+
+/****** Object:  Table [dbo].[Contents]    Script Date: 11/3/2025 9:43:48 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[Contents](
+	[ContentId] [uniqueidentifier] NOT NULL,
+	[ContetBody] [nvarchar](max) NOT NULL,
+	[ContentType] [varchar](5) NULL,
+	[CreatedAt] [datetime] NULL,
+ CONSTRAINT [PK__Contents] PRIMARY KEY CLUSTERED 
+(
+	[ContentId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[Contents] ADD  CONSTRAINT [DF__Contents__ContentId]  DEFAULT (newid()) FOR [ContentId]
+GO
+
+ALTER TABLE [dbo].[Contents] ADD  CONSTRAINT [DF__Contents__CreateAt]  DEFAULT (getdate()) FOR [CreatedAt]
+GO
+
+ALTER TABLE [dbo].[Contents]  WITH CHECK ADD  CONSTRAINT [FK_Contents_Contents] FOREIGN KEY([ContentId])
+REFERENCES [dbo].[Contents] ([ContentId])
+GO
+
+ALTER TABLE [dbo].[Contents] CHECK CONSTRAINT [FK_Contents_Contents]
+GO
 
 
-CREATE TABLE Accounts (
-    AccountId UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
-    FirstName NVARCHAR(100) NOT NULL,
-    LastName NVARCHAR(100) NULL,
-    EmailAdd NVARCHAR(255) NULL,
-    ApiKey NVARCHAR(255) NOT NULL,
-    CreatedDate DATETIME NOT NULL DEFAULT GETDATE(),
-    CONSTRAINT UQ_Accounts_ApiKey UNIQUE (ApiKey)
-);
+/****** Object:  Table [dbo].[ContentGroups]    Script Date: 11/3/2025 9:43:38 PM ******/
+SET ANSI_NULLS ON
+GO
 
-CREATE TABLE AccountLicenses (
-    AccountLicenseId UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
-    AccountId UNIQUEIDENTIFIER NOT NULL,
-    LicenseTypeId INT NOT NULL,
-    ExpiryDate DATETIME NULL,
-    IsActive BIT DEFAULT 1,
-    CreatedAt DATETIME DEFAULT GETDATE(),
-    CONSTRAINT FK_AccountLicenses_Accounts FOREIGN KEY (AccountId)
-        REFERENCES Accounts(AccountId),
-    CONSTRAINT FK_AccountLicenses_LicenseTypes FOREIGN KEY (LicenseTypeId)
-        REFERENCES LicenseTypes(LicenseTypeId)
-);
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[ContentGroups](
+	[ContentGroupId] [uniqueidentifier] NOT NULL,
+	[ContentId] [uniqueidentifier] NULL,
+	[CreatedAt] [datetime] NULL,
+ CONSTRAINT [PK__ContentGroup] PRIMARY KEY CLUSTERED 
+(
+	[ContentGroupId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[ContentGroups] ADD  CONSTRAINT [DF__ContentGr__ContentGroupId]  DEFAULT (newid()) FOR [ContentGroupId]
+GO
+
+ALTER TABLE [dbo].[ContentGroups] ADD  CONSTRAINT [DF__ContentGr__CreateAt]  DEFAULT (getdate()) FOR [CreatedAt]
+GO
+
+ALTER TABLE [dbo].[ContentGroups]  WITH CHECK ADD  CONSTRAINT [FK_ContentGroups_Contents] FOREIGN KEY([ContentId])
+REFERENCES [dbo].[Contents] ([ContentId])
+GO
+
+ALTER TABLE [dbo].[ContentGroups] CHECK CONSTRAINT [FK_ContentGroups_Contents]
+GO
 
 
-CREATE TABLE UserModules (
-    UserModuleId INT IDENTITY(1,1) PRIMARY KEY,
-    AccountId UNIQUEIDENTIFIER NOT NULL,
-    ModuleId INT NOT NULL,
-    IsActive BIT DEFAULT 1,
-    FOREIGN KEY (AccountId) REFERENCES Accounts(AccountId),
-    FOREIGN KEY (ModuleId) REFERENCES Modules(ModuleId)
-);
+
+
+
