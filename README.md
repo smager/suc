@@ -27,21 +27,3 @@ Each module or library hosted in SUC is versioned, licensed (free or paid), and 
 
 ---
 
-## 🔒 Core Responsibilities
-
-- **Authentication & Authorization**
-  - Token-based login (JWT)
-  - API key validation per account
-- **Module Management**
-  - Store and serve JS libraries
-  - Version control per module
-- **License Management**
-  - License validation before access
-  - License type enforcement (FreeUseNonModifiable, PaidNonModifiable)
-- **Account Management**
-  - API key issuance
-  - Module access control
-- **Integration with SmagerUp Studio**
-  - SUS connects to SUC via REST API
-  - Authenticated module download and rendering
-
