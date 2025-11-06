@@ -14,7 +14,7 @@ namespace SmagerUp.Core.API.Data
                 SELECT c.ContentId, c.ContentBody, c.ContentType, c.CreatedAt
                 FROM Contents c
                 INNER JOIN ContentGroups cg ON c.ContentId = cg.ContentId
-                WHERE cg.ContentGroupId = @groupId
+                WHERE cg.ContentGroupId = @groupId AND c.IsDeleted = 0 
                 ORDER BY c.ContentType;";
 
             using var conn = _db.CreateConnection();

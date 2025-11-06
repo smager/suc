@@ -1,10 +1,11 @@
 ﻿namespace SmagerUp.Core.API.Models
 {
-    public class Content
+    public class Content:LogColumns
     {
         public Guid ContentId { get; set; }
-        public string ContentBody { get; set; } = string.Empty; // store html/css/js/text
-        public string ContentType { get; set; } = string.Empty; // "js", "css", "html", "txt"
-        public DateTime CreatedAt { get; set; }
+        public string ContentName { get; set; } = string.Empty;
+        public string Title {  get; set; }= string.Empty;
+        public string Body { get; set; } = string.Empty; 
+        public string Type { get; set; } = string.Empty; 
     }
 }

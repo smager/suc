@@ -14,7 +14,7 @@ namespace SmagerUp.Core.API.Data
             const string sql = @"
                 SELECT ModuleId, Name, Version, LicenseTypeId, Price, ContentGroupId, IsActive, CreatedAt
                 FROM Modules
-                WHERE Name = @name AND Version = @version AND IsActive = 1;";
+                WHERE Name = @name AND Version = @version AND IsActive = 1 AND IsDeleted=0;";
 
             using var conn = _db.CreateConnection();
             return await conn.QueryFirstOrDefaultAsync<Module>(sql, new { name, version });
@@ -27,7 +27,7 @@ namespace SmagerUp.Core.API.Data
                m.Price, m.ContentGroupId, m.IsActive, m.CreatedAt
         FROM Modules m
         INNER JOIN AccountModules am ON am.ModuleId = m.ModuleId
-        WHERE am.AccountId = @accountId AND am.IsActive = 1;";
+        WHERE am.AccountId = @accountId AND am.IsActive = 1 AND m.IsDeleted=0;";
 
             using var conn = _db.CreateConnection();
             return await conn.QueryAsync<Module>(sql, new { accountId });

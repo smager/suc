@@ -49,8 +49,8 @@ public class ModulesController : SucController
             var contentRows = await _contents.GetContentsByGroupAsync(mod.ContentGroupId.Value);
             contents = contentRows.Select(c => new ModuleContentDto
             {
-                Type = c.ContentType,
-                Body = c.ContentBody
+                Type = c.Type,
+                Body = c.Body
             });
         }
 
