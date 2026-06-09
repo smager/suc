@@ -1,4 +1,4 @@
-INSERT INTO Contents(ContentId, uniqueName,title,Body,Type)
+INSERT INTO Contents(ContentId, ContentName,title,Body,Type)
 VALUES
 ('BE9BEC34-5045-4353-A888-177E7F6FC2AA','SFUL','Free Use Non Modifiable','Free to use but cannot modify','html'),
 ('A45D469C-7854-4A92-BC83-0772B1F62190','SCL','Paid Non Modifiable','Paid license for commercial use','html');

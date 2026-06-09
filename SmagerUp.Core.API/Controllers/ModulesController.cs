@@ -65,7 +65,7 @@ public class ModulesController : SucController
         };
 
         // 🔹 Free or owned module
-        if (mod.LicenseTypeId == 1 || allowed)
+        if (mod.LicenseTypeId == Guid.Parse("44e6fdd5-a3f6-4bc2-9d6b-44e7a1f3d0a8") || allowed)
             return this.Success(moduleInfo);
 
         // 🔹 Paid and not owned

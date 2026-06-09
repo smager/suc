@@ -12,12 +12,22 @@ namespace SmagerUp.Core.API.Data
             _db = db;
         }
 
-        public async Task<string?> GetLicenseNameAsync(int licenseTypeId)
-        {
-            const string sql = "SELECT Name FROM LicenseTypes WHERE LicenseTypeId = @id;";
-            using var conn = _db.CreateConnection();
-            return await conn.QueryFirstOrDefaultAsync<string?>(sql, new { id = licenseTypeId });
-        }
+        //public async Task<string?> GetLicenseNameAsync(Guid licenseTypeId)
+        //{
+        //    const string sql = @"
+        //        SELECT c.ContentName
+        //        FROM LicenseTypes lt
+        //        INNER JOIN Contents c ON lt.ContentId = c.ContentId
+        //        WHERE lt.LicenseTypeId = @LicenseTypeId";
+
+        //    using var conn = _db.CreateConnection();
+
+        //    return await conn.QueryFirstOrDefaultAsync<string?>(
+        //        sql,
+        //        new { LicenseTypeId = licenseTypeId }
+        //    );
+        //}
+
         public async Task<IEnumerable<LicenseType>> GetAllAsync()
         {
             const string sql = "SELECT * FROM LicenseTypes ORDER BY CreatedAt DESC";
@@ -25,11 +35,11 @@ namespace SmagerUp.Core.API.Data
             return await connection.QueryAsync<LicenseType>(sql);
         }
 
-        public async Task<LicenseType?> GetByIdAsync(int licenseTypeId)
+        public async Task<LicenseType?> GetByIdAsync(Guid licenseTypeId)
         {
-            const string sql = "SELECT * FROM LicenseTypes WHERE LicenseTypeId = @licenseTypeId";
+            const string sql = "SELECT * FROM LicenseTypes WHERE LicenseTypeId = @LicenseTypeId";
             using var connection = _db.CreateConnection();
-            return await connection.QuerySingleOrDefaultAsync<LicenseType>(sql, new { licenseTypeId });
+            return await connection.QuerySingleOrDefaultAsync<LicenseType>(sql, new { LicenseTypeId = licenseTypeId });
         }
 
         public async Task<int> CreateAsync(LicenseType license)
@@ -56,11 +66,27 @@ namespace SmagerUp.Core.API.Data
             return await connection.ExecuteAsync(sql, license);
         }
 
-        public async Task<int> DeleteAsync(int licenseTypeId)
+        public async Task<int> DeleteAsync(Guid licenseTypeId)
         {
-            const string sql = "DELETE FROM LicenseTypes WHERE LicenseTypeId = @licenseTypeId";
+            const string sql = "DELETE FROM LicenseTypes WHERE LicenseTypeId = @LicenseTypeId";
             using var connection = _db.CreateConnection();
-            return await connection.ExecuteAsync(sql, new { licenseTypeId });
+            return await connection.ExecuteAsync(sql, new { LicenseTypeId = licenseTypeId });
+        }
+
+        internal async Task<string?> GetLicenseNameAsync(Guid licenseTypeId)
+        {
+            const string sql = @"
+                SELECT c.ContentName
+                FROM LicenseTypes lt
+                INNER JOIN Contents c ON lt.ContentId = c.ContentId
+                WHERE lt.LicenseTypeId = @LicenseTypeId";
+
+            using var conn = _db.CreateConnection();
+
+            return await conn.QueryFirstOrDefaultAsync<string?>(
+                sql,
+                new { LicenseTypeId = licenseTypeId }
+            );
         }
     }
 }
