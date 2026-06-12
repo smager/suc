@@ -2,54 +2,53 @@
 using Microsoft.Data.SqlClient;
 using SmagerUp.Core.API.Data.Core;
 using System.Data;
+using System.Text.RegularExpressions;
 
 public interface IClientDbResolver
 {
-    IDbConnection CreateConnection();
+    IDbConnection CreateConnection(Guid? ClientId);
 }
 
 namespace SmagerUp.Core.API.Data.Client
 {
+    
     public class ClientDbResolver : IClientDbResolver
     {
-        private readonly IHttpContextAccessor _http;
+        private readonly ILogger<ClientDbResolver> _log;
         private readonly CoreDapperContext _core;
-
-        public ClientDbResolver(
-            IHttpContextAccessor http,
-            CoreDapperContext core)
+        public ClientDbResolver(ILogger<ClientDbResolver> log, IHttpContextAccessor http, CoreDapperContext core)
         {
-            _http = http;
-            _core = core;
+            _log = log; 
+            _core = core; 
         }
 
-        public IDbConnection CreateConnection()
+        public IDbConnection CreateConnection(Guid? ClientId)
         {
-            var clientId = GetClientId();
-
             using var coreConn = _core.CreateConnection();
-
-            var cs = coreConn.QuerySingle<string>(
+            var cs = coreConn.QuerySingleOrDefault<string>(
                 "SELECT ConnectionString FROM Clients WHERE ClientId=@id",
-                new { id = clientId });
+                new { id = ClientId });
 
+            if (string.IsNullOrWhiteSpace(cs))
+                throw new InvalidOperationException($"Connection string not found for client {ClientId}");
+
+            _log.LogInformation("Resolved client connection string: {cs}", cs);
+            // optional quick test
+            /*
+            try
+            {
+                using var test = new SqlConnection(cs);
+                test.Open();
+                test.Close();
+            }
+            catch (Exception ex)
+            {
+                _log.LogError(ex, "Failed to open client DB from resolved connection string");
+                throw;
+            }
+            */
             return new SqlConnection(cs);
         }
 
-        private int GetClientId()
-        {
-            var value = _http.HttpContext?
-                .User
-                .FindFirst("ClientId")?
-                .Value;
-
-            if (!int.TryParse(value, out var clientId))
-            {
-                throw new UnauthorizedAccessException(
-                    "ClientId claim not found.");
-            }
-
-            return clientId;
-        }
     }
 }

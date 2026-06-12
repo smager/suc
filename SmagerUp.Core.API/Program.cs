@@ -2,8 +2,8 @@
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using SmagerUp.Core.API.Services;
-using SmagerUp.Core.API.Data.Client;
-using SmagerUp.Core.API.Data.Core;
+using ApiData=SmagerUp.Core.API.Data;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,15 +36,20 @@ builder.Services.AddAuthentication(options =>
 });
 
 // ✅ Dependency Injection
-builder.Services.AddSingleton<CoreDapperContext>();
+builder.Services.AddSingleton<ApiData.Core.CoreDapperContext>();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<IClientDbResolver, ClientDbResolver>();
+builder.Services.AddScoped<IClientDbResolver, ApiData.Client.ClientDbResolver>();
 
-builder.Services.AddScoped<ClientRepository>();
-builder.Services.AddScoped<LicenseTypeRepository>();
-builder.Services.AddScoped<ComponentRepository>();
-builder.Services.AddScoped<ResourceRepository>();
+
+builder.Services.AddScoped<ApiData.Core.ClientRepository>();
+builder.Services.AddScoped<ApiData.Core.LicenseTypeRepository>();
+builder.Services.AddScoped<ApiData.Core.ComponentRepository>();
+builder.Services.AddScoped<ApiData.Core.ResourceRepository>();
+
+builder.Services.AddScoped<ApiData.Client.UserRepository>();
+
 builder.Services.AddScoped<TokenService>();
+
 //builder.Services.AddScoped<AccountLicenseRepository>();
 
 
@@ -73,3 +78,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+

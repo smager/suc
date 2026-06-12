@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmagerUp.Core.API.Data.Core;
-using SmagerUp.Core.API.DTOs;
+using SmagerUp.Core.API.DTOs.Core;
 using SmagerUp.Core.API.Models;
 
 namespace SmagerUp.Core.API.Controllers.Core;

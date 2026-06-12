@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace SmagerUp.Core.API.DTOs
+namespace SmagerUp.Core.API.DTOs.Core
 {
     public class ResourceDto
     {

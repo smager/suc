@@ -1,4 +1,4 @@
-﻿namespace SmagerUp.Core.API.DTOs
+﻿namespace SmagerUp.Core.API.DTOs.Core
 {
     public class ModuleContentDto
     {
