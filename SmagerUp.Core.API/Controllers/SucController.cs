@@ -5,7 +5,7 @@ namespace SmagerUp.Core.API.Controllers
 {
     public abstract class SucController : ControllerBase
     {
-        protected Guid? AccountId
+        protected Guid? ClientId
         {
             get
             {
@@ -16,7 +16,7 @@ namespace SmagerUp.Core.API.Controllers
             }
         }
 
-        protected string AccountName => User.FindFirst(ClaimTypes.Name)?.Value ?? string.Empty;
+        protected string ClientName => User.FindFirst(ClaimTypes.Name)?.Value ?? string.Empty;
 
     }
 

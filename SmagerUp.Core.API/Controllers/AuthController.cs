@@ -10,24 +10,24 @@ namespace SmagerUp.Core.API.Controllers
     [Route("api/auth")]
     public class AuthController : ControllerBase
     {
-        private readonly AccountRepository _accounts;
+        private readonly ClientRepository _clients;
         private readonly TokenService _tokenService;
 
-        public AuthController(AccountRepository accounts, TokenService tokenService)
+        public AuthController(ClientRepository clients, TokenService tokenService)
         {
-            _accounts = accounts;
+            _clients = clients;
             _tokenService = tokenService;
         }
 
         [HttpPost("token")]
         public async Task<IActionResult> GetToken([FromBody] ValidateRequestDto dto)
         {
-            var acc = await _accounts.ValidateAsync(dto.AccountId, dto.Key);
-            if (acc == null)
-                return this.Fail("Invalid account ID or API key.");
+            var client = await _clients.ValidateAsync(dto.ClientId, dto.Key);
+            if (client == null)
+                return this.Fail("Invalid client ID or API key.");
 
-            var token = _tokenService.GenerateToken(acc);
-            return this.Success(new { token, account = $"{acc.FirstName} {acc.LastName}" }, "Token generated successfully.");
+            var token = _tokenService.GenerateToken(client);
+            return this.Success(new { token, Client = $"{client.FirstName} {client.LastName}" }, "Token generated successfully.");
         }
     }
 }

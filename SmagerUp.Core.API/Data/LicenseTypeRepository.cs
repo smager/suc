@@ -5,9 +5,9 @@ namespace SmagerUp.Core.API.Data
 {
     public class LicenseTypeRepository
     {
-        private readonly DapperContext _db;
+        private readonly CoreDapperContext _db;
 
-        public LicenseTypeRepository(DapperContext db)
+        public LicenseTypeRepository(CoreDapperContext db)
         {
             _db = db;
         }
@@ -73,20 +73,6 @@ namespace SmagerUp.Core.API.Data
             return await connection.ExecuteAsync(sql, new { LicenseTypeId = licenseTypeId });
         }
 
-        internal async Task<string?> GetLicenseNameAsync(Guid licenseTypeId)
-        {
-            const string sql = @"
-                SELECT c.ContentName
-                FROM LicenseTypes lt
-                INNER JOIN Contents c ON lt.ContentId = c.ContentId
-                WHERE lt.LicenseTypeId = @LicenseTypeId";
-
-            using var conn = _db.CreateConnection();
-
-            return await conn.QueryFirstOrDefaultAsync<string?>(
-                sql,
-                new { LicenseTypeId = licenseTypeId }
-            );
-        }
+     
     }
 }

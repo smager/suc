@@ -3,12 +3,12 @@ using Microsoft.Data.SqlClient;
 
 namespace SmagerUp.Core.API.Data
 {
-    public class DapperContext
+    public class CoreDapperContext
     {
         private readonly IConfiguration _config;
         private readonly string _connectionString;
 
-        public DapperContext(IConfiguration config)
+        public CoreDapperContext(IConfiguration config)
         {
             _config = config;
             _connectionString = _config.GetConnectionString("Default") 

@@ -35,11 +35,14 @@ builder.Services.AddAuthentication(options =>
 });
 
 // ✅ Dependency Injection
-builder.Services.AddSingleton<DapperContext>();
-builder.Services.AddScoped<AccountRepository>();
+builder.Services.AddSingleton<CoreDapperContext>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IClientDbResolver, ClientDbResolver>();
+
+builder.Services.AddScoped<ClientRepository>();
 builder.Services.AddScoped<LicenseTypeRepository>();
-builder.Services.AddScoped<ModuleRepository>();
-builder.Services.AddScoped<ContentRepository>();
+builder.Services.AddScoped<ComponentRepository>();
+builder.Services.AddScoped<ResourceRepository>();
 builder.Services.AddScoped<TokenService>();
 //builder.Services.AddScoped<AccountLicenseRepository>();
 

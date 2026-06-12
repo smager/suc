@@ -15,17 +15,17 @@ namespace SmagerUp.Core.API.Services
             _config = config;
         }
 
-        public string GenerateToken(Account acc)
+        public string GenerateToken(Client client)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, acc.AccountId.ToString()),
-                new Claim(ClaimTypes.NameIdentifier, acc.AccountId.ToString()),   // ✅ Add this line
-                new Claim(JwtRegisteredClaimNames.UniqueName, $"{acc.FirstName} {acc.LastName}"),
-                new Claim(ClaimTypes.Name, $"{acc.FirstName} {acc.LastName}"),
+                new Claim(JwtRegisteredClaimNames.Sub, client.ClientId.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, client.ClientId.ToString()),   // ✅ Add this line
+                new Claim(JwtRegisteredClaimNames.UniqueName, $"{client.FirstName} {client.LastName}"),
+                new Claim(ClaimTypes.Name, $"{client.FirstName} {client.LastName}"),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
