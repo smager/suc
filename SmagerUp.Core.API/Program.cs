@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using SmagerUp.Core.API.Data;
 using SmagerUp.Core.API.Services;
+using SmagerUp.Core.API.Data.Client;
+using SmagerUp.Core.API.Data.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 

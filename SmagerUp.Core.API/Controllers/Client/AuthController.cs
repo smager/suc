@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SmagerUp.Core.API.Data;
+using SmagerUp.Core.API.Data.Core;
 using SmagerUp.Core.API.DTOs;
-using SmagerUp.Core.API.Extensions;
 using SmagerUp.Core.API.Services;
 
-namespace SmagerUp.Core.API.Controllers
+namespace SmagerUp.Core.API.Controllers.Client
 {
     [ApiController]
-    [Route("api/auth")]
+    [Route("api/client/login")]
     public class AuthController : ControllerBase
     {
         private readonly ClientRepository _clients;

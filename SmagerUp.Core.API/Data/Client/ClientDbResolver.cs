@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
+using SmagerUp.Core.API.Data.Core;
 using System.Data;
 
 public interface IClientDbResolver
@@ -7,7 +8,7 @@ public interface IClientDbResolver
     IDbConnection CreateConnection();
 }
 
-namespace SmagerUp.Core.API.Data
+namespace SmagerUp.Core.API.Data.Client
 {
     public class ClientDbResolver : IClientDbResolver
     {

@@ -1,14 +1,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SmagerUp.Core.API.Data;
+using SmagerUp.Core.API.Data.Core;
 using SmagerUp.Core.API.DTOs;
-using SmagerUp.Core.API.Extensions;
 using SmagerUp.Core.API.Models;
 
-namespace SmagerUp.Core.API.Controllers;
+namespace SmagerUp.Core.API.Controllers.Core;
 
 [ApiController]
-[Route("api/components")]
+[Route("api/core/components")]
 public class ComponentsController : SucController
 {
     private readonly ComponentRepository _components;

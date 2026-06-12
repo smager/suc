@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace SmagerUp.Core.API.Controllers
+namespace SmagerUp.Core.API.Controllers.Core
 {
     [Authorize]
-    [Route("api/files")]
+    [Route("api/core/files")]
     public class FileController : SucController
     {
         [HttpGet("info")]

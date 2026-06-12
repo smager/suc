@@ -2,7 +2,7 @@
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
-using SmagerUp.Core.API.Models;
+using SmagerUp.Core.API.Models.Core;
 
 namespace SmagerUp.Core.API.Services
 {

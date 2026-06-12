@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SmagerUp.Core.API.Models;
 
-namespace SmagerUp.Core.API.Extensions
+namespace SmagerUp.Core.API.Controllers
 {
     public static class ControllerExtensions
     {

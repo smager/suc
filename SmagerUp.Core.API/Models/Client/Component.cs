@@ -1,6 +1,6 @@
 using System;
 
-namespace SmagerUp.Core.API.Models
+namespace SmagerUp.Core.API.Models.Client
 {
     public class Component : LogColumns
     {

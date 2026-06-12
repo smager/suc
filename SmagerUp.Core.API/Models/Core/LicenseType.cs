@@ -1,4 +1,4 @@
-﻿namespace SmagerUp.Core.API.Models
+﻿namespace SmagerUp.Core.API.Models.Core
 {
     public class LicenseType:Resource
     {

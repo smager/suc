@@ -1,8 +1,9 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
+using SmagerUp.Core.API.Data.Core;
 using System.Data;
 
-namespace SmagerUp.Core.API.Data
+namespace SmagerUp.Core.API.Data.Client
 {
     public class ClientDapperContext
     {

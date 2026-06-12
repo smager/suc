@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SmagerUp.Core.API.Data;
-using SmagerUp.Core.API.Extensions;
+using SmagerUp.Core.API.Data.Core;
 using SmagerUp.Core.API.Models;
 
-namespace SmagerUp.Core.API.Controllers
+namespace SmagerUp.Core.API.Controllers.Core
 {
     [Authorize]
-    [Route("api/licenseTypes")]
+    [Route("api/core/licenseTypes")]
     public class LicenseTypesController : SucController
     {
         private readonly LicenseTypeRepository _licenseTypeRepository;
@@ -21,7 +20,7 @@ namespace SmagerUp.Core.API.Controllers
         [HttpGet("all")]
         public async Task<IActionResult> GetLicenses()
         {
-            if (this.ClientId is null)
+            if (ClientId is null)
                 return this.Fail("Missing account information in token.");
 
             var list = await _licenseTypeRepository.GetAllAsync();

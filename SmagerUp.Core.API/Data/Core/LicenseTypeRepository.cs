@@ -1,7 +1,7 @@
 ﻿using Dapper;
-using SmagerUp.Core.API.Models;
+using SmagerUp.Core.API.Models.Core;
 
-namespace SmagerUp.Core.API.Data
+namespace SmagerUp.Core.API.Data.Core
 {
     public class LicenseTypeRepository
     {

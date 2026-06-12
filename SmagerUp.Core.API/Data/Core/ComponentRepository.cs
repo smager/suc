@@ -1,8 +1,8 @@
 using Dapper;
-using SmagerUp.Core.API.Models;
+using SmagerUp.Core.API.Models.Core;
 using System.Data;
 
-namespace SmagerUp.Core.API.Data
+namespace SmagerUp.Core.API.Data.Core
 {
     public class ComponentRepository
     {
