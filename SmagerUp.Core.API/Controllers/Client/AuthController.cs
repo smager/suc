@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SmagerUp.Core.API.Data.Client;
 using SmagerUp.Core.API.Data.Core;
 using SmagerUp.Core.API.DTOs.Client;
-using SmagerUp.Core.API.DTOs.Core;
 using SmagerUp.Core.API.Services;
 
 namespace SmagerUp.Core.API.Controllers.Client
@@ -23,7 +21,6 @@ namespace SmagerUp.Core.API.Controllers.Client
             _tokenService = tokenService;
         }
 
-        // [Authorize]
         [HttpPost("login")]
         public async Task<IActionResult> GetClientUser([FromBody] ClientUserValidateRequestDto p)
         {
@@ -35,7 +32,7 @@ namespace SmagerUp.Core.API.Controllers.Client
                 return this.Fail("Invalid client ID or API key.");
 
 
-            var user = await _users.ValidateClientUserAsync(this.ClientId, p.UserName, p.Password);
+            var user = await _users.ValidateClientUserAsync(p.ClientId, p.UserName, p.Password);
             if (user == null)
                 return this.Fail("Invalid Username or Password.");
 
@@ -50,6 +47,8 @@ namespace SmagerUp.Core.API.Controllers.Client
                     ,user.UserName
                     ,user.FirstName
                     ,user.LastName
+                    ,user.RoleId
+                    ,user.RoleName
                 }
                 , "User successfully Logged In."
             );

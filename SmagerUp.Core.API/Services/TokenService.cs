@@ -43,6 +43,15 @@ namespace SmagerUp.Core.API.Services
                 JwtRegisteredClaimNames.UniqueName,
                 $"{user.FirstName} {user.LastName}"),
 
+
+                // Roles
+                new Claim(ClaimTypes.Role, user.RoleName),
+
+                // Optional future permissions
+                // new Claim("Permission", "Components.View"),
+                // new Claim("Permission", "Components.Edit"),
+
+
                 new Claim(
                 JwtRegisteredClaimNames.Jti,
                 Guid.NewGuid().ToString())

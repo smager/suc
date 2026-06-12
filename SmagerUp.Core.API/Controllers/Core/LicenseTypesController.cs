@@ -20,8 +20,8 @@ namespace SmagerUp.Core.API.Controllers.Core
         [HttpGet("all")]
         public async Task<IActionResult> GetLicenses()
         {
-            if (ClientId is null)
-                return this.Fail("Missing account information in token.");
+            //if (ClientId is null)
+            //    return this.Fail("Missing account information in token.");
 
             var list = await _licenseTypeRepository.GetAllAsync();
            

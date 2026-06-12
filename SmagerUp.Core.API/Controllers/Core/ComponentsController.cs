@@ -81,9 +81,6 @@ public class ComponentsController : SucController
     [HttpGet("client")]
     public async Task<IActionResult> GetComponentsByClient()
     {
-        if (ClientId == Guid.Empty)
-            return this.Fail("Missing account information in token.");
-
         var components = await _components.GetClientComponentsAsync(ClientId);
         var list = components.Select(c => new
         {

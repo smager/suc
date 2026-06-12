@@ -10,7 +10,7 @@ namespace SmagerUp.Core.API.Controllers.Core
         [HttpGet("info")]
         public IActionResult Info()
         {
-            return Ok(new { account = ClientName, message = "You’re authorized to access files." });
+            return Ok(new { UserName, message = "You’re authorized to access files." });
         }
     }
 

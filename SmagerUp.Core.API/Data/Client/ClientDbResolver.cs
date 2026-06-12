@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 public interface IClientDbResolver
 {
-    IDbConnection CreateConnection(Guid? ClientId);
+    IDbConnection CreateConnection(Guid ClientId);
 }
 
 namespace SmagerUp.Core.API.Data.Client
@@ -22,7 +22,7 @@ namespace SmagerUp.Core.API.Data.Client
             _core = core; 
         }
 
-        public IDbConnection CreateConnection(Guid? ClientId)
+        public IDbConnection CreateConnection(Guid ClientId)
         {
             using var coreConn = _core.CreateConnection();
             var cs = coreConn.QuerySingleOrDefault<string>(
