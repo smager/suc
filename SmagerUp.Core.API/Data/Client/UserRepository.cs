@@ -19,5 +19,12 @@ public class UserRepository
         return await con.QueryFirstOrDefaultAsync<Models.Client.User>(sql, new { UserName, Password });
     }
 
-   
+
+    public async Task<Models.Client.User?> GetUserByIdAsync(Guid ClientId, Guid UserId)
+    {
+        var sql = "SELECT * FROM Users WHERE UserId=@UserId";
+        using var con = _resolver.CreateConnection(ClientId);
+        return await con.QueryFirstOrDefaultAsync<Models.Client.User>(sql, new { UserId});
+    }
+
 }

@@ -26,8 +26,7 @@ namespace SmagerUp.Core.API.Controllers.Client
         {
 
 
-
-            var client = await _clients.ValidateAsync(p.ClientId, p.Key);
+            var client = await _clients.ValidateClientAsync(p.ClientId, p.Key);
             if (client == null)
                 return this.Fail("Invalid client ID or API key.");
 
@@ -36,22 +35,53 @@ namespace SmagerUp.Core.API.Controllers.Client
             if (user == null)
                 return this.Fail("Invalid Username or Password.");
 
+            TokenResponseDto tokens = _tokenService.GenerateTokens(client, user,1,7);
 
-            var token = _tokenService.GenerateToken(client, user);
+     
+            return this.Success(
+                new
+                {
+                    tokens,
+                    user.UserId,
+                    user.UserName,
+                },
+                "User successfully Logged In."
+            );
+        }
+
+
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken( [FromBody] RefreshTokenRequestDto p)
+        {
+            var principal = _tokenService.ValidateToken(p.RefreshToken);
+
+            if (principal == null)
+                return this.Fail("Invalid refresh token.");
+
+            var tokenType = principal.FindFirst("TokenType")?.Value;
+
+            if (tokenType != "Refresh") return this.Fail("Invalid refresh token.");
+
+            Guid clientId = Guid.Parse(principal.FindFirst("ClientId")!.Value);
+
+            Guid userId = Guid.Parse(principal.FindFirst("UserId")!.Value);
+
+            var client = await _clients.GetClientByIdAsync(clientId);
+
+            var user = await _users.GetUserByIdAsync(clientId, userId);
+
+            if (client == null || user == null)
+                return this.Fail("Invalid refresh token.");
+
+            var accessToken = _tokenService.GenerateAccessToken(client,user,1);
 
 
             return this.Success(
-                new {
-                    Token = token
-                    ,user.UserId
-                    ,user.UserName
-                    ,user.FirstName
-                    ,user.LastName
-                    ,user.RoleId
-                    ,user.RoleName
-                }
-                , "User successfully Logged In."
-            );
+                new
+                {
+                    AccessToken = accessToken
+                },
+                "Token refreshed successfully.");
         }
     }
 }
