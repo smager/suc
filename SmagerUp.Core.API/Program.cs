@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using SmagerUp.Core.API.Services;
 using ApiData=SmagerUp.Core.API.Data;
+using SmagerUp.Core.API.Extensions;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -38,22 +38,7 @@ builder.Services.AddAuthentication(options =>
 // ✅ Dependency Injection
 builder.Services.AddSingleton<ApiData.Core.CoreDapperContext>();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<IClientDbResolver, ApiData.Client.ClientDbResolver>();
-
-builder.Services.AddScoped<ApiData.Core.HostRepository>();
-builder.Services.AddScoped<ApiData.Core.ClientRepository>();
-builder.Services.AddScoped<ApiData.Core.LicenseTypeRepository>();
-builder.Services.AddScoped<ApiData.Core.ComponentRepository>();
-builder.Services.AddScoped<ApiData.Core.ResourceRepository>();
-
-builder.Services.AddScoped<ApiData.Client.UserRepository>();
-
-builder.Services.AddScoped<TokenService>();
-builder.Services.AddDataProtection();
-builder.Services.AddScoped<IEncryptionService, EncryptionService>();
-builder.Services.AddScoped<IPasswordService, PasswordService>();
-
-//builder.Services.AddScoped<AccountLicenseRepository>();
+builder.Services.AddSmagerUpCore();
 
 
 // ✅ CORS Policy
