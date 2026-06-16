@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
 using SmagerUp.Core.API.Data.Core;
+using SmagerUp.Core.API.Services;
 using System.Data;
 using System.Text.RegularExpressions;
 
@@ -16,10 +17,13 @@ namespace SmagerUp.Core.API.Data.Client
     {
         private readonly ILogger<ClientDbResolver> _log;
         private readonly CoreDapperContext _core;
-        public ClientDbResolver(ILogger<ClientDbResolver> log, IHttpContextAccessor http, CoreDapperContext core)
+        private readonly IEncryptionService _encryption;
+
+        public ClientDbResolver(ILogger<ClientDbResolver> log, IHttpContextAccessor http, CoreDapperContext core, IEncryptionService encryption   )
         {
             _log = log; 
             _core = core; 
+            _encryption = encryption;
         }
 
         public IDbConnection CreateConnection(Guid ClientId)
@@ -28,6 +32,8 @@ namespace SmagerUp.Core.API.Data.Client
             var cs = coreConn.QuerySingleOrDefault<string>(
                 "SELECT ConnectionString FROM Clients WHERE ClientId=@id",
                 new { id = ClientId });
+
+            var decryptedCS = _encryption.Decrypt(cs);   
 
             if (string.IsNullOrWhiteSpace(cs))
                 throw new InvalidOperationException($"Connection string not found for client {ClientId}");
@@ -47,7 +53,7 @@ namespace SmagerUp.Core.API.Data.Client
                 throw;
             }
             */
-            return new SqlConnection(cs);
+            return new SqlConnection(decryptedCS);
         }
 
     }

@@ -12,11 +12,11 @@ public class UserRepository
         _resolver = resolver;
     }
 
-    public async Task<Models.Client.User?> ValidateClientUserAsync(Guid ClientId, string UserName, string Password)
+    public async Task<Models.Client.User?> GetClientUserAsync(Guid ClientId, string UserName)
     {
-        var sql = "SELECT u.*,r.RoleId,r.RoleName FROM Users u INNER JOIN Roles r on u.RoleId=r.RoleId WHERE u.UserName=@UserName and u.Password=@Password";
+        var sql = "SELECT u.*,r.RoleId,r.RoleName FROM Users u INNER JOIN Roles r on u.RoleId=r.RoleId WHERE u.UserName=@UserName";
         using var con = _resolver.CreateConnection(ClientId);
-        return await con.QueryFirstOrDefaultAsync<Models.Client.User>(sql, new { UserName, Password });
+        return await con.QueryFirstOrDefaultAsync<Models.Client.User>(sql, new { UserName});
     }
 
 

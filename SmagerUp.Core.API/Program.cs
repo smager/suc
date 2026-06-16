@@ -40,7 +40,7 @@ builder.Services.AddSingleton<ApiData.Core.CoreDapperContext>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IClientDbResolver, ApiData.Client.ClientDbResolver>();
 
-
+builder.Services.AddScoped<ApiData.Core.HostRepository>();
 builder.Services.AddScoped<ApiData.Core.ClientRepository>();
 builder.Services.AddScoped<ApiData.Core.LicenseTypeRepository>();
 builder.Services.AddScoped<ApiData.Core.ComponentRepository>();
@@ -49,6 +49,9 @@ builder.Services.AddScoped<ApiData.Core.ResourceRepository>();
 builder.Services.AddScoped<ApiData.Client.UserRepository>();
 
 builder.Services.AddScoped<TokenService>();
+builder.Services.AddDataProtection();
+builder.Services.AddScoped<IEncryptionService, EncryptionService>();
+builder.Services.AddScoped<IPasswordService, PasswordService>();
 
 //builder.Services.AddScoped<AccountLicenseRepository>();
 

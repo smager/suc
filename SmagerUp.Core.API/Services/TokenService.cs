@@ -18,16 +18,17 @@ namespace SmagerUp.Core.API.Services
         }
 
 
-        public TokenResponseDto GenerateTokens(Client client, User user, int accessTokenExpires, int refreshTokenExpires )
+        public TokenResponseDto GenerateTokens(bool isHostAccess, Client client, User user, int accessTokenExpires, int refreshTokenExpires )
         {
-            var accessToken = GenerateAccessToken(client, user, accessTokenExpires);
-            var refreshToken = GenerateRefreshToken(client, user, refreshTokenExpires);
+            var accessToken = GenerateAccessToken(isHostAccess,client, user, accessTokenExpires);
+            var refreshToken = GenerateRefreshToken(isHostAccess, client, user, refreshTokenExpires);
 
             return (
                     new TokenResponseDto
                     {
                         AccessToken = accessToken,
                         RefreshToken = refreshToken,
+                        IsHostAccess = isHostAccess,
                         AccessTokenExpires = DateTime.UtcNow.AddMinutes(accessTokenExpires),
                         RefreshTokenExpires=DateTime.UtcNow.AddDays(refreshTokenExpires)  
 
@@ -37,7 +38,7 @@ namespace SmagerUp.Core.API.Services
         }
 
 
-        public string GenerateAccessToken(Client client, User user, int accessTokenExpires)
+        public string GenerateAccessToken(bool isHostAccess,Client client, User user, int accessTokenExpires)
         {
             var claims = new[]
             {
@@ -46,6 +47,7 @@ namespace SmagerUp.Core.API.Services
                 new Claim("ApiKey", client.ApiKey.ToString()),
                 new Claim("UserId", user.UserId.ToString()),
                 new Claim("UserName", user.UserName),
+                new Claim("IsHostUser", isHostAccess.ToString()),
                 new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
                 new Claim(ClaimTypes.Name, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
@@ -54,7 +56,7 @@ namespace SmagerUp.Core.API.Services
             return GenerateJwtToken(claims,DateTime.UtcNow.AddMinutes(accessTokenExpires));
         }
 
-        public string GenerateRefreshToken(Client client, User user, int refreshTokenExpires)
+        public string GenerateRefreshToken(bool isHostAccess,Client client, User user, int refreshTokenExpires)
         {
             var claims = new[]
             {
@@ -63,6 +65,7 @@ namespace SmagerUp.Core.API.Services
                 new Claim("ApiKey", client.ApiKey.ToString()),
                 new Claim("UserId", user.UserId.ToString()),
                 new Claim("UserName", user.UserName),
+                new Claim("IsHostUser", isHostAccess.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
             };
 
