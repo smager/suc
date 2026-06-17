@@ -11,7 +11,8 @@ namespace SmagerUp.Core.API.Extensions
             //data
             services.AddScoped<IClientDbResolver,ClientDbResolver>();
             services.AddScoped<HostRepository>();
-            services.AddScoped<ClientRepository>();
+            services.AddScoped<SmagerUp.Core.API.Data.Client.ClientRepository>();
+            services.AddScoped<SmagerUp.Core.API.Data.Core.ClientRepository>();
             services.AddScoped<LicenseTypeRepository>();
             services.AddScoped<ComponentRepository>();
             services.AddScoped<ResourceRepository>();

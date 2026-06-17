@@ -1,6 +1,4 @@
 ﻿using Dapper;
-using Microsoft.Data.SqlClient;
-using System.Text.RegularExpressions;
 
 namespace SmagerUp.Core.API.Data.Client;
 public class UserRepository

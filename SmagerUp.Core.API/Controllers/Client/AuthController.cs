@@ -4,8 +4,6 @@ using SmagerUp.Core.API.Data.Core;
 using SmagerUp.Core.API.DTOs.Client;
 using SmagerUp.Core.API.Models.Client;
 using SmagerUp.Core.API.Services;
-using System.Security.Claims;
-
 namespace SmagerUp.Core.API.Controllers.Client
 {
     [ApiController]
@@ -13,12 +11,15 @@ namespace SmagerUp.Core.API.Controllers.Client
     public class AuthController : SucController
     {
         private readonly UserRepository _users;
-        private readonly ClientRepository _clients;
+        private readonly Data.Core.ClientRepository _clients;
         private readonly TokenService _tokenService;
         private readonly HostRepository _host;
         private readonly IPasswordService _passwordService;
+        const int _refreshTokenExpire= 7; // days
+        const int _accessTokenExpire = 30; // mins
 
-        public AuthController(UserRepository Users, ClientRepository clients, TokenService tokenService, HostRepository host, IPasswordService passwordService)
+
+        public AuthController(UserRepository Users, Data.Core.ClientRepository clients, TokenService tokenService, HostRepository host, IPasswordService passwordService)
         {
             _users = Users;
             _clients = clients;
@@ -68,7 +69,7 @@ namespace SmagerUp.Core.API.Controllers.Client
                 user = clientUser;
             }
 
-            TokenResponseDto tokens = _tokenService.GenerateTokens(isHostUser,client, user,1,7);
+            TokenResponseDto tokens = _tokenService.GenerateTokens(isHostUser,client, user, _accessTokenExpire, _refreshTokenExpire);
 
             return this.Success(
                 new
@@ -104,7 +105,7 @@ namespace SmagerUp.Core.API.Controllers.Client
             if (client == null || user == null)
                 return this.Fail("Invalid refresh token.");
 
-            var accessToken = _tokenService.GenerateAccessToken(isHostUser, client,user,1);
+            var accessToken = _tokenService.GenerateAccessToken(isHostUser, client,user, _accessTokenExpire);
 
 
             return this.Success(
