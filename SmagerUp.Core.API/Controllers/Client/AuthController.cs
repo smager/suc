@@ -11,7 +11,7 @@ namespace SmagerUp.Core.API.Controllers.Client
     public class AuthController : SucController
     {
         private readonly UserRepository _users;
-        private readonly Data.Core.ClientRepository _clients;
+        private readonly CoreRepository _clients;
         private readonly TokenService _tokenService;
         private readonly HostRepository _host;
         private readonly IPasswordService _passwordService;
@@ -19,7 +19,7 @@ namespace SmagerUp.Core.API.Controllers.Client
         const int _accessTokenExpire = 30; // mins
 
 
-        public AuthController(UserRepository Users, Data.Core.ClientRepository clients, TokenService tokenService, HostRepository host, IPasswordService passwordService)
+        public AuthController(UserRepository Users, CoreRepository clients, TokenService tokenService, HostRepository host, IPasswordService passwordService)
         {
             _users = Users;
             _clients = clients;

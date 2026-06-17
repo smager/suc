@@ -2,10 +2,10 @@
 
 namespace SmagerUp.Core.API.Data.Core
 {
-    public class ClientRepository
+    public class CoreRepository
     {
         private readonly CoreDapperContext _ctx;
-        public ClientRepository(CoreDapperContext ctx) => _ctx = ctx;
+        public CoreRepository(CoreDapperContext ctx) => _ctx = ctx;
 
         public async Task<Models.Core.Client?> GetClientByIdAsync(Guid ClientId)
         {
