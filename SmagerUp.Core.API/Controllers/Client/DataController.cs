@@ -18,13 +18,12 @@ public class DataController : SucController
     public DataController(IClientDbResolver clientDb,SqlCommandsRepository sqlCommands)
     {
         _clientDb = clientDb;
-        //_clientDb.ClientId = ClientId;
         _sqlCommands = sqlCommands;
     }
 
     [HttpPost("getdata")]
     public async Task<IActionResult> GetData(
-    [FromBody] DataRequest request)
+       [FromBody] DataRequest request)
     {
         try
         {
@@ -35,7 +34,9 @@ public class DataController : SucController
                     errMsg = "SqlCode is required."
                 });
 
-            var sqlCmd = await _sqlCommands.GetByCodeAsync(ClientId,request.SqlCode);
+            var sqlCmd = await _sqlCommands.GetByCodeAsync(
+                ClientId,
+                request.SqlCode);
 
             if (sqlCmd == null)
                 return Ok(new
@@ -49,31 +50,30 @@ public class DataController : SucController
 
             var p = BuildParameters(request);
 
-            p.Add(
-                "return_value",
-                direction: ParameterDirection.ReturnValue);
-
-            using var multi = await conn.QueryMultipleAsync(
-                sqlCmd.SqlCmdText,
-                p,
-                commandType:
-                    sqlCmd.IsProcedure == "Y"
-                        ? CommandType.StoredProcedure
-                        : CommandType.Text);
+            using var multi = await conn.QueryMultipleAsync(sqlCmd.SqlCmdText,p,commandType:sqlCmd.IsProcedure == "Y" ? CommandType.StoredProcedure: CommandType.Text);
 
             var datasets = new List<object>();
 
-            while (!multi.IsConsumed)
+            while ( ! multi.IsConsumed)
             {
                 datasets.Add(
                     (await multi.ReadAsync()).ToList()
                 );
             }
 
+            object result = new { };
+
+            if (datasets.Count > 1)
+            {
+                var lastDataset = datasets[^1] as IEnumerable<dynamic>;
+                result =  lastDataset?.FirstOrDefault() ?? new { };
+                datasets.RemoveAt(datasets.Count - 1);
+            }
+
             return Ok(new
             {
                 isSuccess = true,
-                returnValue = p.Get<object?>("return_value"),
+                result,
                 datasets
             });
         }
@@ -112,26 +112,20 @@ public class DataController : SucController
                 _clientDb.CreateConnection(ClientId);
 
             var p = BuildParameters(request);
+ 
 
-            p.Add(
-                "return_value",
-                dbType: DbType.String,
-                direction: ParameterDirection.ReturnValue,
-                size: 4000);
-
-            var affected = await conn.ExecuteAsync(
-                sqlCmd.SqlCmdText,
-                p,
-                commandType:
-                    sqlCmd.IsProcedure == "Y"
-                    ? CommandType.StoredProcedure
-                    : CommandType.Text);
+            var result= await conn.QueryFirstOrDefaultAsync(
+                     sqlCmd.SqlCmdText
+                    ,p
+                    ,commandType:
+                        sqlCmd.IsProcedure == "Y"
+                        ? CommandType.StoredProcedure
+                        : CommandType.Text);
 
             return Ok(new
             {
                 isSuccess = true,
-                recordsAffected = affected,
-                returnValue = p.Get<object?>("return_value")
+                result
             });
         }
         catch (Exception ex)
@@ -159,14 +153,45 @@ public class DataController : SucController
 
         if (UserId != Guid.Empty)
         {
-            p.Add("user_id", UserId);
+            p.Add("UserId", UserId);
         }
 
-        if (request.ParentId != null)
+        if (request.Rows?.Any() == true)
         {
-            p.Add("parent_id", request.ParentId);
+            var dt = ToDataTable(request.Rows);
+
+            p.Add("tt",dt.AsTableValuedParameter());
         }
+
 
         return p;
+    }
+
+    private DataTable ToDataTable(
+    List<Dictionary<string, object>> rows)
+    {
+        var dt = new DataTable();
+
+        if (!rows.Any())
+            return dt;
+
+        foreach (var col in rows[0].Keys)
+        {
+            dt.Columns.Add(col);
+        }
+
+        foreach (var row in rows)
+        {
+            var dr = dt.NewRow();
+
+            foreach (var col in row.Keys)
+            {
+                dr[col] = row[col] ?? DBNull.Value;
+            }
+
+            dt.Rows.Add(dr);
+        }
+
+        return dt;
     }
 }

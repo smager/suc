@@ -18,14 +18,14 @@ namespace SmagerUp.Core.API.Data.Client
         {
             const string sql = @"
               SELECT SqlcmdCode,SqlcmdText,IsProcedure,IsPublic FROM su_SqlCommands 
-              WHERE SqlCode = @SqlCode
+              WHERE SqlcmdCode = @SqlCode
               AND IsActive = 1;";
 
             using var conn =_db.CreateConnection(clientId);
 
-            return await conn.QueryFirstOrDefaultAsync<SqlCommandInfo>(
-                sql,
-                new { SqlCode = sqlCode });
+            return await conn.QueryFirstOrDefaultAsync<SqlCommandInfo>(sql,new { SqlCode = sqlCode });
         }
+
+
     }
 }
