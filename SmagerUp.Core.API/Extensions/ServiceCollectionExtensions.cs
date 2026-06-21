@@ -13,9 +13,7 @@ namespace SmagerUp.Core.API.Extensions
             services.AddScoped<HostRepository>();
             services.AddScoped<ClientRepository>();
             services.AddScoped<CoreRepository>();
-            services.AddScoped<LicenseTypeRepository>();
             services.AddScoped<ComponentRepository>();
-            services.AddScoped<ResourceRepository>();
             services.AddScoped<UserRepository>();
             services.AddScoped<SqlCommandsRepository>();
 
