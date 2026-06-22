@@ -1,10 +1,8 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
 using SmagerUp.Core.API.Data.Core;
-using SmagerUp.Core.API.Models.Core;
 using SmagerUp.Core.API.Services;
 using System.Data;
-using System.Text.RegularExpressions;
 
 public interface IClientDbResolver
 {

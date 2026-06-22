@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using ApiData=SmagerUp.Core.API.Data;
 using SmagerUp.Core.API.Extensions;
 
 
