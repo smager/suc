@@ -9,7 +9,8 @@ namespace SmagerUp.Core.API.Extensions
         {
 
             //data
-            services.AddScoped<IClientDbResolver,ClientDbResolver>();
+            services.AddSingleton<CoreDbContext>();
+            services.AddScoped<IClientDbResolver,ClientDbContext>();
             services.AddScoped<HostRepository>();
             services.AddScoped<ClientRepository>();
             services.AddScoped<CoreRepository>();

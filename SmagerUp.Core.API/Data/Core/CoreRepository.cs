@@ -5,8 +5,8 @@ namespace SmagerUp.Core.API.Data.Core
 {
     public class CoreRepository
     {
-        private readonly CoreDapperContext _ctx;
-        public CoreRepository(CoreDapperContext ctx) => _ctx = ctx;
+        private readonly CoreDbContext _ctx;
+        public CoreRepository(CoreDbContext ctx) => _ctx = ctx;
 
         public async Task<Models.Core.Client?> GetClientByIdAsync(Guid ClientId)
         {

@@ -14,13 +14,13 @@ public interface IClientDbResolver
 namespace SmagerUp.Core.API.Data.Client
 {
     
-    public class ClientDbResolver : IClientDbResolver
+    public class ClientDbContext : IClientDbResolver
     {
-        private readonly ILogger<ClientDbResolver> _log;
-        private readonly CoreDapperContext _core;
+        private readonly ILogger<ClientDbContext> _log;
+        private readonly CoreDbContext _core;
         private readonly IEncryptionService _encryption;
 
-        public ClientDbResolver(ILogger<ClientDbResolver> log, IHttpContextAccessor http, CoreDapperContext core, IEncryptionService encryption   )
+        public ClientDbContext(ILogger<ClientDbContext> log, IHttpContextAccessor http, CoreDbContext core, IEncryptionService encryption   )
         {
             _log = log; 
             _core = core; 

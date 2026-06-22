@@ -6,8 +6,8 @@ using System.Data;
 namespace SmagerUp.Core.API.Data.Core;
 public class HostRepository
 {
-    private readonly CoreDapperContext _ctx;
-    public HostRepository(CoreDapperContext ctx) => _ctx = ctx;
+    private readonly CoreDbContext _ctx;
+    public HostRepository(CoreDbContext ctx) => _ctx = ctx;
 
     public async Task<Models.Core.Host?> GetHostInfo()
     {

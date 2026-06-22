@@ -36,7 +36,6 @@ builder.Services.AddAuthentication(options =>
 });
 
 // ✅ Dependency Injection
-builder.Services.AddSingleton<ApiData.Core.CoreDapperContext>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSmagerUpCore();
 

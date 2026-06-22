@@ -6,8 +6,8 @@ namespace SmagerUp.Core.API.Data.Core
 {
     public class ComponentRepository
     {
-        private readonly CoreDapperContext _db;
-        public ComponentRepository(CoreDapperContext db) => _db = db;
+        private readonly CoreDbContext _db;
+        public ComponentRepository(CoreDbContext db) => _db = db;
 
         // now accepts int version (DB column is int)
         public async Task<Component?> GetComponentAsync(string name, string version)
