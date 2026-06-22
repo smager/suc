@@ -1,16 +1,18 @@
-﻿using SmagerUp.Core.API.Data.Client;
+﻿using Microsoft.AspNetCore.DataProtection;
+using SmagerUp.Core.API.Data.Client;
 using SmagerUp.Core.API.Data.Core;
 using SmagerUp.Core.API.Services;
+
 namespace SmagerUp.Core.API.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddSmagerUpCore( this IServiceCollection services)
+        public static IServiceCollection AddSmagerUpCore(this IServiceCollection services, IHostEnvironment environment)
         {
 
             //data
             services.AddSingleton<CoreDbContext>();
-            services.AddScoped<IClientDbResolver,ClientDbContext>();
+            services.AddScoped<IClientDbResolver, ClientDbContext>();
             services.AddScoped<HostRepository>();
             services.AddScoped<ClientRepository>();
             services.AddScoped<CoreRepository>();
@@ -20,7 +22,15 @@ namespace SmagerUp.Core.API.Extensions
 
             //security
             services.AddScoped<TokenService>();
-            services.AddDataProtection();
+
+            var keysPath = Path.Combine(environment.ContentRootPath, "Keys");
+
+            services.AddDataProtection()
+                .PersistKeysToFileSystem(new DirectoryInfo(keysPath))
+                .SetApplicationName("SmagerUpCore");
+
+
+
             services.AddScoped<IEncryptionService, EncryptionService>();
             services.AddScoped<IPasswordService, PasswordService>();
 

@@ -36,7 +36,7 @@ builder.Services.AddAuthentication(options =>
 
 // ✅ Dependency Injection
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddSmagerUpCore();
+builder.Services.AddSmagerUpCore(builder.Environment);
 
 
 // ✅ CORS Policy
@@ -59,6 +59,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowAll");
+app.UseHttpsRedirection();
+//app.UseDeveloperExceptionPage();// For detailed error information during development
 app.UseAuthentication();   // Required for [Authorize]
 app.UseAuthorization();
 app.MapControllers();
