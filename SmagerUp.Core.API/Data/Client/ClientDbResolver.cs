@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
 using SmagerUp.Core.API.Data.Core;
+using SmagerUp.Core.API.Models.Core;
 using SmagerUp.Core.API.Services;
 using System.Data;
 using System.Text.RegularExpressions;
@@ -29,9 +30,9 @@ namespace SmagerUp.Core.API.Data.Client
         public IDbConnection CreateConnection(Guid ClientId)
         {
             using var coreConn = _core.CreateConnection();
+
             var cs = coreConn.QuerySingleOrDefault<string>(
-                "SELECT ConnectionString FROM Clients WHERE ClientId=@id",
-                new { id = ClientId });
+                "SELECT dbo.GetConnectionString(@ClientId)", new { ClientId });
 
             var decryptedCS = _encryption.Decrypt(cs);   
 

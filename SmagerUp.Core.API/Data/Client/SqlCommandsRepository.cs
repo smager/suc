@@ -1,7 +1,5 @@
 ﻿using Dapper;
-using SmagerUp.Core.API.Data.Core;
 using SmagerUp.Core.API.Models;
-using SmagerUp.Core.API.Models.Core;
 
 namespace SmagerUp.Core.API.Data.Client
 {
@@ -16,14 +14,10 @@ namespace SmagerUp.Core.API.Data.Client
 
         public async Task<SqlCommandInfo?> GetByCodeAsync(Guid clientId, string sqlCode)
         {
-            const string sql = @"
-              SELECT SqlcmdCode,SqlcmdText,IsProcedure,IsPublic FROM su_SqlCommands 
-              WHERE SqlcmdCode = @SqlCode
-              AND IsActive = 1;";
 
             using var conn =_db.CreateConnection(clientId);
 
-            return await conn.QueryFirstOrDefaultAsync<SqlCommandInfo>(sql,new { SqlCode = sqlCode });
+            return await conn.QueryFirstOrDefaultAsync<SqlCommandInfo>("dbo.su_SqlCommands_sel", new { SqlCode = sqlCode },commandType:System.Data.CommandType.StoredProcedure);
         }
 
 

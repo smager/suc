@@ -60,9 +60,7 @@ namespace SmagerUp.Core.API.Controllers.Client
             { // Regular client user authentication
                 if (client.ApiKey != p.ApiKey) return this.Fail(invalidCredentialsMsg);
 
-                var clientUser = await _users.GetClientUserAsync(
-                    p.ClientId,
-                    p.UserName);
+                var clientUser = await _users.GetClientByUserNameAsync(p.ClientId,p.UserName);
 
                 if (clientUser == null || !_passwordService.VerifyPassword(clientUser.PasswordHash, p.Password))    return this.Fail(invalidCredentialsMsg);
 

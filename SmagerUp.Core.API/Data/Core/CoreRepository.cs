@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using System.Data;
 
 namespace SmagerUp.Core.API.Data.Core
 {
@@ -9,9 +10,8 @@ namespace SmagerUp.Core.API.Data.Core
 
         public async Task<Models.Core.Client?> GetClientByIdAsync(Guid ClientId)
         {
-            var sql = "SELECT * FROM Clients WHERE ClientId=@Id";
             using var con = _ctx.CreateConnection();
-            return await con.QueryFirstOrDefaultAsync<Models.Core.Client>(sql, new { Id = ClientId });
+            return await con.QueryFirstOrDefaultAsync<Models.Core.Client>("Clients_sel", new { ClientId }, commandType:CommandType.StoredProcedure);
         }
     }
 }
