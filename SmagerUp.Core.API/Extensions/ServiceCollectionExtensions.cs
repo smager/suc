@@ -31,10 +31,12 @@ namespace SmagerUp.Core.API.Extensions
                 .PersistKeysToFileSystem(new DirectoryInfo(keysPath))
                 .SetApplicationName("SmagerUpCore");
 
-
-
             services.AddScoped<IEncryptionService, EncryptionService>();
             services.AddScoped<IPasswordService, PasswordService>();
+
+            //others
+            services.AddScoped<SettingsRepository>();
+            services.AddScoped<EmailSettingsRepository>();
 
             return services;
         }
