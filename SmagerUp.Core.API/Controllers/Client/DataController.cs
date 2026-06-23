@@ -5,7 +5,7 @@ using SmagerUp.Core.API.Data.Client;
 using SmagerUp.Core.API.DTOs;
 
 [ApiController]
-[Route("api/client/data")]
+[Route("client/data")]
 [Authorize]
 public class DataController : SucController
 {

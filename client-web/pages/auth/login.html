@@ -1,0 +1,201 @@
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-5">
+
+            <div class="card shadow border-0">
+
+                <div class="card-body p-5">
+
+                    <div class="text-center mb-4">
+
+                        
+
+                        <p class="text-muted">
+                            Sign in to your SmagerUp account
+                        </p>
+
+                    </div>
+
+                    <form id="frmLogin">
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Username or Email
+                            </label>
+
+                            <input
+                                id="txtUserName"
+                                type="text"
+                                class="form-control"
+                                autocomplete="username"
+                                required>
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Password
+                            </label>
+
+                            <input
+                                id="txtPassword"
+                                type="password"
+                                class="form-control"
+                                autocomplete="current-password"
+                                required>
+
+                        </div>
+
+                        <div class="d-flex justify-content-between mb-4">
+
+                            <div class="form-check">
+
+                                <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="chkRemember">
+
+                                <label
+                                    class="form-check-label"
+                                    for="chkRemember">
+
+                                    Remember me
+
+                                </label>
+
+                            </div>
+
+                            <a href="#/auth/forgot-password">
+                                Forgot Password?
+                            </a>
+
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary w-100">
+
+                            Sign In
+
+                        </button>
+
+                    </form>
+
+                    <div class="text-center my-4">
+
+                        <span class="text-muted">
+                            OR
+                        </span>
+
+                    </div>
+
+                    <button
+                        id="btnGoogleLogin"
+                        class="btn btn-outline-dark w-100">
+
+                        <i class="fab fa-google me-2"></i>
+                        Continue with Google
+
+                    </button>
+
+                    <div class="text-center mt-4">
+
+                        Don't have an account?
+
+                        <a href="#/auth/register">
+                            Create Account
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+$("#frmLogin").on("submit", async function (e) {
+
+    e.preventDefault();
+
+    try {
+
+        let payload = {
+
+            sqlCode: "CLIENT_LOGIN",
+
+            parameters: {
+
+                UserName:
+                    $("#txtUserName").val(),
+
+                Password:
+                    $("#txtPassword").val()
+
+            }
+
+        };
+
+        let result = await $.ajax({
+
+            url:
+                API_URL,
+
+            method:
+                "POST",
+
+            contentType:
+                "application/json",
+
+            data:
+                JSON.stringify(payload)
+
+        });
+
+        localStorage.setItem(
+            "access_token",
+            result.data.accessToken
+        );
+
+        localStorage.setItem(
+            "refresh_token",
+            result.data.refreshToken
+        );
+
+        localStorage.setItem(
+            "user",
+            JSON.stringify(result.data.user)
+        );
+
+        location.hash =
+            "#/dashboard";
+
+    }
+    catch (ex) {
+
+        alert(
+            ex.responseJSON?.message ??
+            "Login failed."
+        );
+
+    }
+
+});
+
+$("#btnGoogleLogin").on("click", function () {
+
+    // Google Auth
+
+});
+
+</script>

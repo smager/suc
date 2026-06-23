@@ -11,7 +11,8 @@ namespace SmagerUp.Core.API.Extensions
         {
 
             //data
-            services.AddSingleton<CoreDbContext>();
+
+            services.AddScoped<CoreDbContext>(); // Register CoreDbContext as scoped
             services.AddScoped<IClientDbResolver, ClientDbContext>();
             services.AddScoped<HostRepository>();
             services.AddScoped<ClientRepository>();
@@ -21,7 +22,8 @@ namespace SmagerUp.Core.API.Extensions
             services.AddScoped<IDataRepository, DataRepository>();
 
             //security
-            services.AddScoped<TokenService>();
+            services.AddSingleton<TokenService>();
+            services.AddSingleton<IEncryptionService, EncryptionService>();  
 
             var keysPath = Path.Combine(environment.ContentRootPath, "Keys");
 

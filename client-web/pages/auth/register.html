@@ -1,0 +1,303 @@
+ 
+
+<style>
+    body {
+        background: #f8f9fa;
+        min-height: 100vh;
+    }
+
+    .register-card {
+        border: none;
+        border-radius: 16px;
+    }
+
+    .logo {
+        font-size: 2rem;
+        font-weight: 700;
+    }
+
+    .required::after {
+        content: " *";
+        color: red;
+    }
+</style>
+ <div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-7 col-xl-6">
+
+            <div class="card register-card shadow">
+
+                <div class="card-body p-4 p-md-5">
+
+                    <div class="text-center mb-4">
+                        <div class="logo">SmagerUp</div>
+                        <p class="text-muted mb-0">
+                            Create your company account
+                        </p>
+                    </div>
+
+                    <form id="frmRegister">
+
+                        <!-- Company -->
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Company Name
+                            </label>
+
+                            <input
+                                id="txtCompanyName"
+                                type="text"
+                                class="form-control"
+                                maxlength="200"
+                                >
+                        </div>
+
+                        <!-- Name -->
+
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label required">
+                                    First Name
+                                </label>
+
+                                <input
+                                    id="txtFirstName"
+                                    type="text"
+                                    class="form-control"
+                                    maxlength="100"
+                                    required>
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label required">
+                                    Last Name
+                                </label>
+
+                                <input
+                                    id="txtLastName"
+                                    type="text"
+                                    class="form-control"
+                                    maxlength="100"
+                                    required>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Email -->
+
+                        <div class="mb-3">
+
+                            <label class="form-label required">
+                                Email Address
+                            </label>
+
+                            <input
+                                id="txtEmail"
+                                type="email"
+                                class="form-control"
+                                maxlength="255"
+                                required>
+
+                        </div>
+
+                        <!-- Username -->
+
+                        <div class="mb-3">
+
+                            <label class="form-label required">
+                                Username
+                            </label>
+
+                            <input
+                                id="txtUserName"
+                                type="text"
+                                class="form-control"
+                                maxlength="100"
+                                required>
+
+                        </div>
+
+                        <!-- Password -->
+
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label required">
+                                    Password
+                                </label>
+
+                                <input
+                                    id="txtPassword"
+                                    type="password"
+                                    class="form-control"
+                                    required>
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label required">
+                                    Confirm Password
+                                </label>
+
+                                <input
+                                    id="txtConfirmPassword"
+                                    type="password"
+                                    class="form-control"
+                                    required>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Terms -->
+
+                        <div class="form-check mb-4">
+
+                            <input
+                                class="form-check-input"
+                                type="checkbox"
+                                id="chkTerms">
+
+                            <label
+                                class="form-check-label"
+                                for="chkTerms">
+
+                                I agree to the
+                                <a href="#/terms">
+                                    Terms and Conditions
+                                </a>
+
+                            </label>
+
+                        </div>
+
+                        <!-- Register -->
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary w-100">
+
+                            Create Account
+
+                        </button>
+
+                    </form>
+
+                    <!-- Divider -->
+
+                    <div class="text-center my-4">
+
+                        <span class="text-muted">
+                            OR
+                        </span>
+
+                    </div>
+
+                    <!-- Google -->
+
+                    <button
+                        id="btnGoogle"
+                        type="button"
+                        class="btn btn-outline-dark w-100">
+
+                        Continue with Google
+
+                    </button>
+
+                    <!-- Login -->
+
+                    <div class="text-center mt-4">
+
+                        Already have an account?
+
+                        <a href="#/auth/login">
+                            Sign In
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+$("#frmRegister").on("submit", async function(e){
+
+    e.preventDefault();
+
+    if(!$("#chkTerms").prop("checked")){
+        alert("Please accept Terms and Conditions.");
+        return;
+    }
+
+    if($("#txtPassword").val() !== $("#txtConfirmPassword").val()){
+        alert("Passwords do not match.");
+        return;
+    }
+
+    let payload = {
+
+        sqlCode: "CLIENT_REGISTER",
+
+        parameters: {
+
+            CompanyName:
+                $("#txtCompanyName").val(),
+
+            FirstName:
+                $("#txtFirstName").val(),
+
+            LastName:
+                $("#txtLastName").val(),
+
+            Email:
+                $("#txtEmail").val(),
+
+            UserName:
+                $("#txtUserName").val(),
+
+            Password:
+                $("#txtPassword").val()
+        }
+    };
+
+    console.log(payload);
+
+    /*
+    let result = await $.ajax({
+        url: API_URL,
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(payload)
+    });
+    */
+
+});
+
+$("#btnGoogle").on("click", function(){
+
+    // Google Auth Here
+
+});
+
+</script>
+ 

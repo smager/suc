@@ -7,7 +7,7 @@ using SmagerUp.Core.API.Services;
 namespace SmagerUp.Core.API.Controllers.Client
 {
     [ApiController]
-    [Route("api/client")]
+    [Route("client")]
     public class AuthController : SucController
     {
         private readonly UserRepository _users;
