@@ -236,9 +236,20 @@
 
 </div>
 
-
-
 <script>
+su.setConfig({
+    baseUrl: "/",
+    getDataUrl:
+        "/client/data/getdata",
+
+    executeCmdUrl:
+        "/client/data/executecmd"
+});
+
+console.log("agi register");
+
+
+
 
 $("#frmRegister").on("submit", async function(e){
 
@@ -256,27 +267,15 @@ $("#frmRegister").on("submit", async function(e){
 
     let payload = {
 
-        sqlCode: "CLIENT_REGISTER",
-
+        sqlCode: "CL-F113-5E14",
         parameters: {
 
-            CompanyName:
-                $("#txtCompanyName").val(),
-
-            FirstName:
-                $("#txtFirstName").val(),
-
-            LastName:
-                $("#txtLastName").val(),
-
-            Email:
-                $("#txtEmail").val(),
-
-            UserName:
-                $("#txtUserName").val(),
-
-            Password:
-                $("#txtPassword").val()
+            CompanyName: $("#txtCompanyName").val(),
+            FirstName: $("#txtFirstName").val(),
+            LastName: $("#txtLastName").val(),
+            Email: $("#txtEmail").val(),
+            UserName: $("#txtUserName").val(),
+            Password: $("#txtPassword").val()
         }
     };
 
