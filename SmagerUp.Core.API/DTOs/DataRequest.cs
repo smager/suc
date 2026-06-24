@@ -5,6 +5,5 @@
         public string? SqlCode { get; set; }
         public Dictionary<string, object>? Parameters { get; set; }
         public List<Dictionary<string, object>>? Rows { get; set; }
-        public object? ParentId { get; set; }
     }
 }

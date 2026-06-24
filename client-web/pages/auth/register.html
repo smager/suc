@@ -237,17 +237,6 @@
 </div>
 
 <script>
-su.setConfig({
-    baseUrl: "/",
-    getDataUrl:
-        "/client/data/getdata",
-
-    executeCmdUrl:
-        "/client/data/executecmd"
-});
-
-console.log("agi register");
-
 
 
 
@@ -267,28 +256,34 @@ $("#frmRegister").on("submit", async function(e){
 
     let payload = {
 
-        sqlCode: "CL-F113-5E14",
+        sqlCode: "CL-5D8B-32DB",
         parameters: {
 
             CompanyName: $("#txtCompanyName").val(),
             FirstName: $("#txtFirstName").val(),
             LastName: $("#txtLastName").val(),
-            Email: $("#txtEmail").val(),
+            EmailAdd: $("#txtEmail").val(),
             UserName: $("#txtUserName").val(),
-            Password: $("#txtPassword").val()
+            PasswordHash: $("#txtPassword").val()
         }
     };
 
     console.log(payload);
 
-    /*
-    let result = await $.ajax({
-        url: API_URL,
-        method: "POST",
-        contentType: "application/json",
-        data: JSON.stringify(payload)
-    });
-    */
+
+     let data = await su.api.post(
+                su.config.apiUrl + "/core/signup",
+                payload
+            );
+
+     if(data && data.isSuccess){
+        //sendEmail(data.result);            
+        console.log("Account created successfully. Please check your email for verification.");
+        //window.location.href = "#/auth/login";
+     } else {
+        console.log("Error creating account: " + (data.message || "Unknown error"));
+     }
+    //console.log(result);
 
 });
 

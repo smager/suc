@@ -1,9 +1,6 @@
 (function (su) {
 
-    if (!su)
-        throw new Error(
-            "su-core.js is required."
-        );
+    if (!su) throw new Error("su-core.js is required.");
 
     const buildHeaders = () => {
 
@@ -11,10 +8,7 @@
             "Content-Type": "application/json"
         };
 
-        const token =
-            localStorage.getItem(
-                su.config.tokenKey
-            );
+        const token = localStorage.getItem(su.config.tokenKey);
 
         if (token) {
             headers.Authorization =
@@ -28,42 +22,42 @@
 
         async post(url, data = {}) {
 
-            const response =
+            const res =
                 await fetch(url, {
                     method: "POST",
                     headers: buildHeaders(),
                     body: JSON.stringify(data)
                 });
 
-            if (!response.ok) {
+            if (!res.ok) {
                 throw new Error(
-                    `HTTP ${response.status}`
+                    `HTTP ${res.status}`
                 );
             }
 
-            return await response.json();
+            return await res.json();
         },
 
         async get(url) {
 
-            const response =
+            const res =
                 await fetch(url, {
                     headers: buildHeaders()
                 });
 
-            if (!response.ok) {
+            if (!res.ok) {
                 throw new Error(
-                    `HTTP ${response.status}`
+                    `HTTP ${res.status}`
                 );
             }
 
-            return await response.json();
+            return await res.json();
         },
 
         async getData(request) {
 
             return await this.post(
-                su.config.getDataUrl,
+                su.config.apiUrl + su.config.getDataUrl,
                 request
             );
 
@@ -72,7 +66,7 @@
         async executeCmd(request) {
 
             return await this.post(
-                su.config.executeCmdUrl,
+                su.config.apiUrl + su.config.executeCmdUrl,
                 request
             );
 

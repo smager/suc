@@ -1,26 +1,23 @@
 ﻿using Dapper;
+using SmagerUp.Core.API.Data.Core;
 using SmagerUp.Core.API.DTOs;
 using System.Data;
+using System.Text.Json;
 
 namespace SmagerUp.Core.API.Data.Client;
 
-public class DataRepository : IDataRepository
+public class CoreDataRepository : ICoreDataRepository
 {
-    private readonly IClientDbResolver _clientDb;
-    private readonly SqlCommandsRepository _sqlCommands;
+    private readonly CoreDbContext _ctx;
+    private readonly CoreSqlCommandsRepository _sqlCommands;
 
-    public DataRepository(
-        IClientDbResolver clientDb,
-        SqlCommandsRepository sqlCommands)
+    public CoreDataRepository(CoreDbContext ctx,CoreSqlCommandsRepository sqlCommands)
     {
-        _clientDb = clientDb;
+        _ctx = ctx;
         _sqlCommands = sqlCommands;
     }
 
-    public async Task<object> GetDataAsync(
-        Guid clientId,
-        Guid userId,
-        DataRequest request)
+    public async Task<object> GetDataAsync(Guid? userId,DataRequest request)
     {
         try
         {
@@ -33,10 +30,7 @@ public class DataRepository : IDataRepository
                 };
             }
 
-            var sqlCmd =
-                await _sqlCommands.GetByCodeAsync(
-                    clientId,
-                    request.SqlCode);
+            var sqlCmd = await _sqlCommands.GetByCodeAsync(request.SqlCode);
 
             if (sqlCmd == null)
             {
@@ -47,8 +41,7 @@ public class DataRepository : IDataRepository
                 };
             }
 
-            using var conn =
-                _clientDb.CreateConnection(clientId);
+            using var conn = _ctx.CreateConnection();
 
             var p =
                 BuildParameters(
@@ -104,10 +97,7 @@ public class DataRepository : IDataRepository
         }
     }
 
-    public async Task<object> ExecuteCmdAsync(
-        Guid clientId,
-        Guid userId,
-        DataRequest request)
+    public async Task<object> ExecuteCmdAsync( Guid? userId,DataRequest request)
     {
         try
         {
@@ -121,9 +111,7 @@ public class DataRepository : IDataRepository
             }
 
             var sqlCmd =
-                await _sqlCommands.GetByCodeAsync(
-                    clientId,
-                    request.SqlCode);
+                await _sqlCommands.GetByCodeAsync(request.SqlCode);
 
             if (sqlCmd == null)
             {
@@ -134,13 +122,9 @@ public class DataRepository : IDataRepository
                 };
             }
 
-            using var conn =
-                _clientDb.CreateConnection(clientId);
+            using var conn = _ctx.CreateConnection();
 
-            var p =
-                BuildParameters(
-                    userId,
-                    request);
+            var p =BuildParameters(userId,request);
 
             using var multi =
                 await conn.QueryMultipleAsync(
@@ -180,19 +164,26 @@ public class DataRepository : IDataRepository
         }
     }
 
-    private DynamicParameters BuildParameters(
-        Guid userId,
-        DataRequest request)
+    private DynamicParameters BuildParameters(  Guid? userId,DataRequest request)
     {
         var p = new DynamicParameters();
+
 
         if (request.Parameters != null)
         {
             foreach (var item in request.Parameters)
             {
+
+                object value = item.Value;
+
+                if (value is JsonElement je)
+                {
+                    value = ConvertJsonElement(je);
+                }
+
                 p.Add(
                     item.Key,
-                    item.Value);
+                    value);
             }
         }
 
@@ -201,13 +192,6 @@ public class DataRepository : IDataRepository
             p.Add(
                 "UserId",
                 userId);
-        }
-
-        if (request.ParentId != null)
-        {
-            p.Add(
-                "ParentId",
-                request.ParentId);
         }
 
         if (request.Rows?.Any() == true)
@@ -224,8 +208,42 @@ public class DataRepository : IDataRepository
         return p;
     }
 
-    private DataTable ToDataTable(
-        List<Dictionary<string, object?>> rows)
+    private object? ConvertJsonElement(
+    JsonElement element)
+    {
+        switch (element.ValueKind)
+        {
+            case JsonValueKind.String:
+                return element.GetString();
+
+            case JsonValueKind.Number:
+
+                if (element.TryGetInt32(out int i))
+                    return i;
+
+                if (element.TryGetInt64(out long l))
+                    return l;
+
+                if (element.TryGetDecimal(out decimal d))
+                    return d;
+
+                return element.ToString();
+
+            case JsonValueKind.True:
+                return true;
+
+            case JsonValueKind.False:
+                return false;
+
+            case JsonValueKind.Null:
+                return null;
+
+            default:
+                return element.ToString();
+        }
+    }
+
+    private DataTable ToDataTable( List<Dictionary<string, object?>> rows)
     {
         var dt = new DataTable();
 

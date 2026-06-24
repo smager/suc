@@ -9,10 +9,10 @@ using SmagerUp.Core.API.DTOs;
 [Authorize]
 public class DataController : SucController
 {
-    private readonly IDataRepository _data;
+    private readonly IClientDataRepository _data;
 
     public DataController(
-        IDataRepository data)
+        IClientDataRepository data)
     {
         _data = data;
     }

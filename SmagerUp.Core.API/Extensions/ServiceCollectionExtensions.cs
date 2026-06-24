@@ -18,8 +18,11 @@ namespace SmagerUp.Core.API.Extensions
             services.AddScoped<ClientRepository>();
             services.AddScoped<CoreRepository>();
             services.AddScoped<UserRepository>();
-            services.AddScoped<SqlCommandsRepository>();
-            services.AddScoped<IDataRepository, DataRepository>();
+            services.AddScoped<ClientSqlCommandsRepository>();
+            services.AddScoped<CoreSqlCommandsRepository>();
+
+            services.AddScoped<IClientDataRepository, ClientDataRepository>();
+            services.AddScoped<ICoreDataRepository, CoreDataRepository>();
 
             //security
             services.AddSingleton<TokenService>();

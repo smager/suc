@@ -13,7 +13,7 @@ public class AppController : SucController
     private readonly IEncryptionService _encryption;
 
 
-    public AppController(IDataRepository data, IEncryptionService encryption)
+    public AppController(IClientDataRepository data, IEncryptionService encryption)
     {
         _encryption = encryption;
     }

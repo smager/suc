@@ -3,11 +3,11 @@ using SmagerUp.Core.API.Models;
 
 namespace SmagerUp.Core.API.Data.Client
 {
-    public class SqlCommandsRepository
+    public class ClientSqlCommandsRepository
     {
         private readonly IClientDbResolver _db;
 
-        public SqlCommandsRepository(   IClientDbResolver db)
+        public ClientSqlCommandsRepository(   IClientDbResolver db)
         {
             _db = db;
         }
