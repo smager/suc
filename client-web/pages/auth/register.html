@@ -237,6 +237,7 @@
 </div>
 
 <script>
+ 
 
 
 
@@ -264,24 +265,48 @@ $("#frmRegister").on("submit", async function(e){
             LastName: $("#txtLastName").val(),
             EmailAdd: $("#txtEmail").val(),
             UserName: $("#txtUserName").val(),
-            PasswordHash: $("#txtPassword").val()
+            PasswordHash: $("#txtPassword").val(),
+            ClientURL: window.location.origin
         }
     };
 
     console.log(payload);
 
 
+     var clientInfo = su.getClientConfig();
      let data = await su.api.post(
-                su.config.apiUrl + "/core/signup",
+                clientInfo.apiUrl + "/core/signup",
                 payload
             );
 
      if(data && data.isSuccess){
-        //sendEmail(data.result);            
-        console.log("Account created successfully. Please check your email for verification.");
-        //window.location.href = "#/auth/login";
+        console.log(data.result);            
+      
+  
+     
+       var _body = await su.getTemplate("pages/templates/verify-email.html", 
+            {
+                ContactName: payload.parameters.FirstName + " " + payload.parameters.LastName,
+                VerifyLink: clientInfo.apiUrl + "/core/verify-email?token=" + data.result.UserId,
+                Year: new Date().getFullYear()
+            }
+       );
+
+        var _emailParams = {
+                "to":payload.parameters.EmailAdd
+                ,"subject": "Verify Your SmagerUp Account"
+                ,"body": _body
+            
+            }
+
+            await su.api.sendEmail(_emailParams);
+            su.msgBox.success("Account created successfully. Please check your email for verification.");
+            setTimeout(() => {
+                window.location.replace(window.location.origin);
+            }, 5000);
+
      } else {
-        console.log("Error creating account: " + (data.message || "Unknown error"));
+        su.msgBox.error("Error creating account: " + (data.message || "Unknown error"));
      }
     //console.log(result);
 

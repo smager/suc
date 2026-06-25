@@ -24,7 +24,7 @@ public class CoreController : SucController
  
     
     [HttpPost("signup")]
-    public async Task<IActionResult> signup([FromBody] DataRequest request)
+    public async Task<IActionResult> Signup([FromBody] DataRequest request)
     {
         var password =((JsonElement)request.Parameters["PasswordHash"]).GetString();
 
@@ -33,6 +33,27 @@ public class CoreController : SucController
         return Ok(result);
 
     }
- 
+    [HttpGet("verify-email")]
+    public async Task<IActionResult> VerifyEmail([FromQuery] Guid token)
+    {
+        DataRequest request = new DataRequest
+        {
+            SqlCode = "US-4F17-D671",
+            Parameters = new Dictionary<string, object>
+        {
+            { "tokenId", token }
+        }
+        };
+
+        dynamic res = await _data.ExecuteCmdAsync(null, request);
+
+        if (!res.isSuccess)
+            return BadRequest(res);
+
+        string redirectUrl = res.result.redirectUrl;
+
+        return Redirect(redirectUrl);
+    }
+
 
 }

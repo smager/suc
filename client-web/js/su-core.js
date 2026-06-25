@@ -3,8 +3,6 @@
          version: "1.0.0"
         ,config: {
              baseUrl        : "/"
-            ,apiUrl         : "https://localhost:7129"
-            ,tokenKey       : "accessToken"
             ,getDataUrl     : "/client/data/getdata"
             ,executeCmdUrl  : "/client/data/executecmd"            
         }
@@ -36,10 +34,8 @@
 
             return this.config;
         }
-        ,
-
-        setConfig(options = {}) {
-
+        
+        , setConfig(options = {}) {
             Object.assign(
                 this.config,
                 options
@@ -49,10 +45,11 @@
         ,removeClient() {
             localStorage.removeItem("d257c9nzi2ke");
             localStorage.removeItem("t1685x3kw44p");
+            localStorage.removeItem("d4d45f5f84kd");
         }
 
-        ,setClient(data) {
-            const { ClientId, ApiKey } = data || {};
+        ,setClientConfig(data) {
+            const { ClientId, ApiKey,ApiUrl } = data || {};
             localStorage.setItem(
                 "d257c9nzi2ke",
                 ClientId
@@ -61,21 +58,40 @@
                 "t1685x3kw44p",
                 ApiKey
             );
+            localStorage.setItem(
+                "d4d45f5f84kd",
+                ApiUrl
+            );            
         }
-        ,getClient() {
+        ,getClientConfig() {
             return {
                 clientId: localStorage.getItem("d257c9nzi2ke"),
-                apiKey: localStorage.getItem("t1685x3kw44p")
+                  apiKey: localStorage.getItem("t1685x3kw44p"),
+                  apiUrl: localStorage.getItem("d4d45f5f84kd")
             };
         }
+
+        ,async getHtmlTemplate(url) {
+              const response =await fetch(url);
+             const html =await response.text();
+             return html;
+        }
+
+        ,async getTemplate(url, data) {
+            var source = await su.getHtmlTemplate(url);
+            var template = Handlebars.compile(source);
+       
+            var html = template(data);
+            return html;
+        }        
 
     };
 
     window.su = su;
-    const clientInfo = su.getClient();
-    if( clientInfo.clientId == null || clientInfo.apiKey == null ){
+    const clientInfo = su.getClientConfig();
+    if( clientInfo.clientId == null || clientInfo.apiKey == null || clientInfo.apiUrl   == null ){
         var config = su.loadConfig().then((config) => {
-            su.setClient(config);
+            su.setClientConfig(config);
             console.log("Config loaded:", config);
         });
     };

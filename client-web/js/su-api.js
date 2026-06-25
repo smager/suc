@@ -55,23 +55,42 @@
         },
 
         async getData(request) {
-
+            var clientInfo = su.getClientConfig();
             return await this.post(
-                su.config.apiUrl + su.config.getDataUrl,
+                clientInfo.apiUrl + su.config.getDataUrl,
                 request
             );
 
         },
 
         async executeCmd(request) {
-
+            var clientInfo = su.getClientConfig();
             return await this.post(
-                su.config.apiUrl + su.config.executeCmdUrl,
+                clientInfo.apiUrl + su.config.executeCmdUrl,
                 request
             );
 
         }
+        ,async sendEmail(request ) {
+            var clientInfo = su.getClientConfig();
+            return su.api.post(
+                clientInfo.apiUrl + "/email/send",
+                request
+            );
+        }
 
-    };
+        ,async getNewAccessToken( ) {
+            var refreshToken =  localStorage.getItem("8dsfgjm3450f");
+            if( refreshToken == null ) location.replace("/login.html");
+            var clientInfo = su.getClientConfig();
+            refreshToken = await this.post(
+                clientInfo.apiUrl + "/client/refresh-token",
+                { refreshToken: refreshToken }
+            );
+            localStorage.setItem("8dsfgjm3450f", refreshToken);
+            return refreshToken;
+        }
+
+    }
 
 })(window.su);

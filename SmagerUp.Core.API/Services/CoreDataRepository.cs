@@ -137,7 +137,7 @@ public class CoreDataRepository : ICoreDataRepository
 
             object result = new { };
 
-            if (!multi.IsConsumed)
+            if ( !multi.IsConsumed)
             {
                 var rows =
                     (await multi.ReadAsync())
@@ -187,7 +187,7 @@ public class CoreDataRepository : ICoreDataRepository
             }
         }
 
-        if (userId != Guid.Empty)
+        if (userId != Guid.Empty &&  userId != null)
         {
             p.Add(
                 "UserId",

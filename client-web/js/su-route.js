@@ -56,6 +56,9 @@ class Router {
         } 
     
         let route =location.hash.replace("#/", "");
+
+        if( route.indexOf("?") > -1 )
+            route = route.substring( 0,route.indexOf("?"));
     
         switch (route) {
 
@@ -75,6 +78,9 @@ class Router {
             case "terms":
                 await this.render("pages/terms.html");
                 break;
+            case "verified":
+                await this.render("pages/verified.html");
+                break;                
 
             default:
                 await this.render("pages/404.html");
