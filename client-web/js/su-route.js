@@ -59,43 +59,22 @@ class Router {
 
         if( route.indexOf("?") > -1 )
             route = route.substring( 0,route.indexOf("?"));
-    
-        switch (route) {
 
-            case "":
-            case "home":
-                await this.render("pages/home.html");
-                break;
-
-            case "auth/login":
-                await this.render("pages/auth/login.html");
-                break;
-
-            case "auth/register":
-                await this.render("pages/auth/register.html");
-                break;
-
-            case "terms":
-                await this.render("pages/terms.html");
-                break;
-            case "verified":
-                await this.render("pages/verified.html");
-                break;                
-
-            default:
-                await this.render("pages/404.html");
-                break;
-        }
+        if(route =="") route ="/p/home";        
+        await this.render(route +".html");
     }
     
     async render(url, params) {
 
+
         try {
+            var response =await fetch(url);
+            if (response.status === 404) {
+                response =await fetch("pages/404.html");                
+            }
+            console.log("response",response)
 
-
-            
-            const response =await fetch(url);
-            const html =await response.text();
+            var html =await response.text();
             const app = document.querySelector("#app");
             app.innerHTML = html;
 
