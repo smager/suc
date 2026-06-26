@@ -9,12 +9,12 @@ namespace SmagerUp.Core.API.Data.Client;
 public class CoreDataRepository : ICoreDataRepository
 {
     private readonly CoreDbContext _ctx;
-    private readonly CoreSqlCommandsRepository _sqlCommands;
+    private readonly CoreActionsRepository _actions;
 
-    public CoreDataRepository(CoreDbContext ctx,CoreSqlCommandsRepository sqlCommands)
+    public CoreDataRepository(CoreDbContext ctx,CoreActionsRepository sqlCommands)
     {
         _ctx = ctx;
-        _sqlCommands = sqlCommands;
+        _actions = sqlCommands;
     }
 
     public async Task<object> GetDataAsync(Guid? userId,DataRequest request)
@@ -26,18 +26,18 @@ public class CoreDataRepository : ICoreDataRepository
                 return new
                 {
                     isSuccess = false,
-                    errMsg = "SqlCode is required."
+                    errMsg = "ActionCode is required."
                 };
             }
 
-            var sqlCmd = await _sqlCommands.GetByCodeAsync(request.ActionCode);
+            var action = await _actions.GetByCodeAsync(request.ActionCode);
 
-            if (sqlCmd == null)
+            if (action == null)
             {
                 return new
                 {
                     isSuccess = false,
-                    errMsg = $"SqlCode '{request.ActionCode}' not found."
+                    errMsg = $"ActionCode '{request.ActionCode}' not found."
                 };
             }
 
@@ -50,10 +50,10 @@ public class CoreDataRepository : ICoreDataRepository
 
             using var multi =
                 await conn.QueryMultipleAsync(
-                    sqlCmd.SqlCmdText,
+                    action.CommandText,
                     p,
                     commandType:
-                        sqlCmd.IsProcedure == "Y"
+                        action.CommandType == "Y"
                             ? CommandType.StoredProcedure
                             : CommandType.Text);
 
@@ -106,19 +106,19 @@ public class CoreDataRepository : ICoreDataRepository
                 return new
                 {
                     isSuccess = false,
-                    errMsg = "SqlCode is required."
+                    errMsg = "ActionCode is required."
                 };
             }
 
-            var sqlCmd =
-                await _sqlCommands.GetByCodeAsync(request.ActionCode);
+            var action =
+                await _actions.GetByCodeAsync(request.ActionCode);
 
-            if (sqlCmd == null)
+            if (action == null)
             {
                 return new
                 {
                     isSuccess = false,
-                    errMsg = $"SqlCode '{request.ActionCode}' not found."
+                    errMsg = $"ActionCode '{request.ActionCode}' not found."
                 };
             }
 
@@ -128,10 +128,10 @@ public class CoreDataRepository : ICoreDataRepository
 
             using var multi =
                 await conn.QueryMultipleAsync(
-                    sqlCmd.SqlCmdText,
+                    action.CommandText,
                     p,
                     commandType:
-                        sqlCmd.IsProcedure == "Y"
+                        action.CommandType == "Y"
                             ? CommandType.StoredProcedure
                             : CommandType.Text);
 

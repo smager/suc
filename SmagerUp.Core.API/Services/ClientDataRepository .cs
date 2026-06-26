@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using SmagerUp.Core.API.DTOs;
+using System;
 using System.Data;
 
 namespace SmagerUp.Core.API.Data.Client;
@@ -7,14 +8,14 @@ namespace SmagerUp.Core.API.Data.Client;
 public class ClientDataRepository : IClientDataRepository
 {
     private readonly IClientDbResolver _clientDb;
-    private readonly ClientSqlCommandsRepository _sqlCommands;
+    private readonly ClientActionsRepository _actions;
 
     public ClientDataRepository(
         IClientDbResolver clientDb,
-        ClientSqlCommandsRepository sqlCommands)
+        ClientActionsRepository sqlCommands)
     {
         _clientDb = clientDb;
-        _sqlCommands = sqlCommands;
+        _actions = sqlCommands;
     }
 
     public async Task<object> GetDataAsync(
@@ -33,12 +34,12 @@ public class ClientDataRepository : IClientDataRepository
                 };
             }
 
-            var sqlCmd =
-                await _sqlCommands.GetByCodeAsync(
+            var action =
+                await _actions.GetByCodeAsync(
                     clientId,
                     request.ActionCode);
 
-            if (sqlCmd == null)
+            if (action == null)
             {
                 return new
                 {
@@ -57,10 +58,10 @@ public class ClientDataRepository : IClientDataRepository
 
             using var multi =
                 await conn.QueryMultipleAsync(
-                    sqlCmd.SqlCmdText,
+                    action.CommandText,
                     p,
                     commandType:
-                        sqlCmd.IsProcedure == "Y"
+                        action.CommandType == "Y"
                             ? CommandType.StoredProcedure
                             : CommandType.Text);
 
@@ -105,9 +106,9 @@ public class ClientDataRepository : IClientDataRepository
     }
 
     public async Task<object> ExecuteCmdAsync(
-        Guid clientId,
-        Guid userId,
-        DataRequest request)
+    Guid clientId,
+    Guid userId,
+    DataRequest request)
     {
         try
         {
@@ -120,55 +121,86 @@ public class ClientDataRepository : IClientDataRepository
                 };
             }
 
-            var sqlCmd =
-                await _sqlCommands.GetByCodeAsync(
-                    clientId,
-                    request.ActionCode);
+            var action = await _actions.GetByCodeAsync( clientId,request.ActionCode);
 
-            if (sqlCmd == null)
+            if (action == null)
             {
                 return new
                 {
                     isSuccess = false,
-                    errMsg = $"SqlCode '{request.ActionCode}' not found."
+                    errMsg =
+                        $"ActionCode '{request.ActionCode}' not found."
                 };
             }
 
-            using var conn =
-                _clientDb.CreateConnection(clientId);
-
-            var p =
-                BuildParameters(
-                    userId,
-                    request);
-
-            using var multi =
-                await conn.QueryMultipleAsync(
-                    sqlCmd.SqlCmdText,
-                    p,
-                    commandType:
-                        sqlCmd.IsProcedure == "Y"
-                            ? CommandType.StoredProcedure
-                            : CommandType.Text);
-
-            object result = new { };
-
-            if (!multi.IsConsumed)
+            switch (action.CommandType)
             {
-                var rows =
-                    (await multi.ReadAsync())
-                    .ToList();
+                case "P":
+                case "T":
 
-                result =
-                    rows.FirstOrDefault()
-                    ?? new { };
+                    using (var conn =
+                        _clientDb.CreateConnection(clientId))
+                    {
+                        var p =
+                            BuildParameters(
+                                userId,
+                                request);
+
+                        var dbCommandType = GetDbCommandType(action.CommandType);
+                        using var multi =
+                            await conn.QueryMultipleAsync(
+                                action.CommandText,
+                                p,
+                                commandType: dbCommandType);
+
+                        object result = new { };
+
+                        if (!multi.IsConsumed)
+                        {
+                            var rows =
+                                (await multi.ReadAsync())
+                                .ToList();
+
+                            result =
+                                rows.FirstOrDefault()
+                                ?? new { };
+                        }
+
+                        return new
+                        {
+                            isSuccess = true,
+                            result
+                        };
+                    }
+
+                //case "G":
+                //    return await ExecuteGraphQlAsync(
+                //        action,
+                //        request.Parameters);
+
+                //case "A":
+                //    return await ExecuteApiAsync(
+                //        action,
+                //        request.Parameters);
+
+                //case "F":
+                //    return await ExecuteFunctionAsync(
+                //        action,
+                //        request.Parameters);
+
+                //case "R":
+                //    return await ExecuteRabbitMqAsync(
+                //        action,
+                //        request.Parameters);
+
+                default:
+                    return new
+                    {
+                        isSuccess = false,
+                        errMsg =
+                            $"Unsupported CommandType '{action.CommandType}'."
+                    };
             }
-
-            return new
-            {
-                isSuccess = true,
-                result
-            };
         }
         catch (Exception ex)
         {
@@ -180,6 +212,16 @@ public class ClientDataRepository : IClientDataRepository
         }
     }
 
+    private CommandType GetDbCommandType(string commandType)
+    {
+        return commandType switch
+        {
+            "P" => CommandType.StoredProcedure,
+            "T" => CommandType.Text,
+            _ => throw new Exception(
+                $"Unsupported CommandType '{commandType}'.")
+        };
+    }
     private DynamicParameters BuildParameters(
         Guid userId,
         DataRequest request)
