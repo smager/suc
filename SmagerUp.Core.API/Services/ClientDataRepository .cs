@@ -24,26 +24,26 @@ public class ClientDataRepository : IClientDataRepository
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(request.SqlCode))
+            if (string.IsNullOrWhiteSpace(request.ActionCode))
             {
                 return new
                 {
                     isSuccess = false,
-                    errMsg = "SqlCode is required."
+                    errMsg = "ActionCode is required."
                 };
             }
 
             var sqlCmd =
                 await _sqlCommands.GetByCodeAsync(
                     clientId,
-                    request.SqlCode);
+                    request.ActionCode);
 
             if (sqlCmd == null)
             {
                 return new
                 {
                     isSuccess = false,
-                    errMsg = $"SqlCode '{request.SqlCode}' not found."
+                    errMsg = $"ActionCode '{request.ActionCode}' not found."
                 };
             }
 
@@ -111,26 +111,26 @@ public class ClientDataRepository : IClientDataRepository
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(request.SqlCode))
+            if (string.IsNullOrWhiteSpace(request.ActionCode))
             {
                 return new
                 {
                     isSuccess = false,
-                    errMsg = "SqlCode is required."
+                    errMsg = "ActionCode is required."
                 };
             }
 
             var sqlCmd =
                 await _sqlCommands.GetByCodeAsync(
                     clientId,
-                    request.SqlCode);
+                    request.ActionCode);
 
             if (sqlCmd == null)
             {
                 return new
                 {
                     isSuccess = false,
-                    errMsg = $"SqlCode '{request.SqlCode}' not found."
+                    errMsg = $"SqlCode '{request.ActionCode}' not found."
                 };
             }
 

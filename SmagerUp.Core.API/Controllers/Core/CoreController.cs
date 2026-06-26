@@ -38,7 +38,7 @@ public class CoreController : SucController
     {
         DataRequest request = new DataRequest
         {
-            SqlCode = "US-4F17-D671",
+            ActionCode = "US-4F17-D671",
             Parameters = new Dictionary<string, object>
         {
             { "tokenId", token }

@@ -21,7 +21,7 @@ public class CoreDataRepository : ICoreDataRepository
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(request.SqlCode))
+            if (string.IsNullOrWhiteSpace(request.ActionCode))
             {
                 return new
                 {
@@ -30,14 +30,14 @@ public class CoreDataRepository : ICoreDataRepository
                 };
             }
 
-            var sqlCmd = await _sqlCommands.GetByCodeAsync(request.SqlCode);
+            var sqlCmd = await _sqlCommands.GetByCodeAsync(request.ActionCode);
 
             if (sqlCmd == null)
             {
                 return new
                 {
                     isSuccess = false,
-                    errMsg = $"SqlCode '{request.SqlCode}' not found."
+                    errMsg = $"SqlCode '{request.ActionCode}' not found."
                 };
             }
 
@@ -101,7 +101,7 @@ public class CoreDataRepository : ICoreDataRepository
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(request.SqlCode))
+            if (string.IsNullOrWhiteSpace(request.ActionCode))
             {
                 return new
                 {
@@ -111,14 +111,14 @@ public class CoreDataRepository : ICoreDataRepository
             }
 
             var sqlCmd =
-                await _sqlCommands.GetByCodeAsync(request.SqlCode);
+                await _sqlCommands.GetByCodeAsync(request.ActionCode);
 
             if (sqlCmd == null)
             {
                 return new
                 {
                     isSuccess = false,
-                    errMsg = $"SqlCode '{request.SqlCode}' not found."
+                    errMsg = $"SqlCode '{request.ActionCode}' not found."
                 };
             }
 
