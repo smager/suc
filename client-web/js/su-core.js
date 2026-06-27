@@ -3,8 +3,7 @@
          version: "1.0.0"
         ,config: {
              baseUrl        : "/"
-            ,getDataUrl     : "/client/data/getdata"
-            ,executeCmdUrl  : "/client/data/executecmd"            
+            ,executeUrl  : "/client/data/execute"            
         }
 
         ,ready(fn) {

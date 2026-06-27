@@ -54,23 +54,16 @@
             return await res.json();
         },
 
-        async getData(request) {
+
+
+        async execute(request) {
             var clientInfo = su.getClientConfig();
             return await this.post(
-                clientInfo.apiUrl + su.config.getDataUrl,
+                clientInfo.apiUrl + su.config.executeUrl,
                 request
             );
-
-        },
-
-        async executeCmd(request) {
-            var clientInfo = su.getClientConfig();
-            return await this.post(
-                clientInfo.apiUrl + su.config.executeCmdUrl,
-                request
-            );
-
         }
+
         ,async sendEmail(request ) {
             var clientInfo = su.getClientConfig();
             return su.api.post(

@@ -11,31 +11,13 @@ public class DataController : SucController
 {
     private readonly IClientDataRepository _data;
 
-    public DataController(
-        IClientDataRepository data)
-    {
+    public DataController(IClientDataRepository data){
         _data = data;
     }
 
-    [HttpPost("getdata")]
-    public async Task<IActionResult> GetData(
-        [FromBody] DataRequest request)
-    {
-        return Ok(
-            await _data.GetDataAsync(
-                ClientId,
-                UserId,
-                request));
+    [HttpPost("execute")]
+    public async Task<IActionResult> Execute([FromBody] DataRequest request){
+        return Ok( await _data.ExecuteAsync(ClientId,UserId,request));
     }
-
-    [HttpPost("executecmd")]
-    public async Task<IActionResult> ExecuteCmd(
-        [FromBody] DataRequest request)
-    {
-        return Ok(
-            await _data.ExecuteCmdAsync(
-                ClientId,
-                UserId,
-                request));
-    }
+ 
 }

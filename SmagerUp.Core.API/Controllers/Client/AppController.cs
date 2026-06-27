@@ -17,21 +17,29 @@ public class AppController : SucController
     {
         _encryption = encryption;
     }
- 
+
     [Authorize]
     [HttpPost("encrypt")]
-    public IActionResult Encrypt(
-        [FromBody] string body)
+    public IActionResult Encrypt([FromBody] EncryptRequest request)
     {
-        return Ok(_encryption.Encrypt(body));
+        return Ok(_encryption.Encrypt(request.Body));
     }
+
+     
 
     [Authorize]
     [HttpPost("decrypt")]
-    public IActionResult Decrypt(
-        [FromBody] string body)
+    public IActionResult Decrypt([FromBody] EncryptRequest request)
     {
-        return Ok(_encryption.Decrypt(body));
+        return Ok(_encryption.Decrypt(request.Body));
     }
 
+
+
+}
+
+
+public class EncryptRequest
+{
+    public string Body { get; set; }
 }

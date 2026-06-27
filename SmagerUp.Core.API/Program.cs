@@ -52,15 +52,15 @@ builder.Services.AddCors(p =>
 var app = builder.Build();
 
 // ✅ Middleware pipeline
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+//}
 
 app.UseCors("AllowAll");
 app.UseHttpsRedirection();
-//app.UseDeveloperExceptionPage();// For detailed error information during development
+app.UseDeveloperExceptionPage();// For detailed error information during development
 app.UseAuthentication();   // Required for [Authorize]
 app.UseAuthorization();
 app.MapControllers();

@@ -70,9 +70,8 @@ class Router {
         try {
             var response =await fetch(url);
             if (response.status === 404) {
-                response =await fetch("pages/404.html");                
+                var response =await fetch("p/404.html");      
             }
-            console.log("response",response)
 
             var html =await response.text();
             const app = document.querySelector("#app");
