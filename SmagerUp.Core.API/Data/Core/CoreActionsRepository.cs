@@ -1,23 +1,20 @@
 ﻿using Dapper;
-using SmagerUp.Core.API.Data.Core;
 using SmagerUp.Core.API.Models;
 
-namespace SmagerUp.Core.API.Data.Client
+namespace SmagerUp.Core.API.Data.Core;
+
+public class CoreActionsRepository
 {
-    public class CoreActionsRepository
+    private readonly CoreDbContext _ctx;
+    public CoreActionsRepository(CoreDbContext ctx) => _ctx = ctx;
+
+    public async Task<ActionInfo?> GetByCodeAsync(string ActionCode)
     {
-        private readonly CoreDbContext _ctx;
-        public CoreActionsRepository(CoreDbContext ctx) => _ctx = ctx;
+        using var con = _ctx.CreateConnection();
 
-       
-
-        public async Task<ActionInfo?> GetByCodeAsync(string ActionCode)
-        {
-            using var con = _ctx.CreateConnection();
-
-            return await con.QueryFirstOrDefaultAsync<ActionInfo>("Actions_sel", new { ActionCode },commandType:System.Data.CommandType.StoredProcedure);
-        }
-
-
+        return await con.QueryFirstOrDefaultAsync<ActionInfo>("Actions_sel", new { ActionCode },commandType:System.Data.CommandType.StoredProcedure);
     }
+
+
 }
+

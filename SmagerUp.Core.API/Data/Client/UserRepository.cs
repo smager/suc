@@ -2,6 +2,7 @@
 using System.Data;
 
 namespace SmagerUp.Core.API.Data.Client;
+
 public class UserRepository
 {
     private readonly IClientDbResolver _resolver;

@@ -3,9 +3,11 @@ using Dapper;
 using SmagerUp.Core.API.DTOs;
 using SmagerUp.Core.API.Models;
 using System.Data;
-using System.Reflection;
 using System.Text.Json;
 using static Dapper.SqlMapper;
+
+namespace SmagerUp.Core.API.Data;
+
 public abstract class BaseDataRepository
 {
     protected async Task<object> GetDataResultAsync(GridReader multi)

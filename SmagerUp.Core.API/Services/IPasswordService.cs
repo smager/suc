@@ -1,11 +1,10 @@
-﻿namespace SmagerUp.Core.API.Services
-{
-    public interface IPasswordService
-    {
-        string HashPassword(string password);
+﻿namespace SmagerUp.Core.API.Services;
 
-        bool VerifyPassword(
-            string hashedPassword,
-            string password);
-    }
+public interface IPasswordService
+{
+    string HashPassword(string password);
+
+    bool VerifyPassword(
+        string hashedPassword,
+        string password);
 }

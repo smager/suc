@@ -2,23 +2,22 @@
 using SmagerUp.Core.API.Services;
 using System.Data;
 
-namespace SmagerUp.Core.API.Data.Core
+namespace SmagerUp.Core.API.Data.Core;
+
+public class CoreDbContext
 {
-    public class CoreDbContext
+    private readonly IConfiguration _config;
+    private readonly IEncryptionService _encryption;
+    private readonly string _connectionString;
+
+    public CoreDbContext(IConfiguration config,IEncryptionService encryption)
     {
-        private readonly IConfiguration _config;
-        private readonly IEncryptionService _encryption;
-        private readonly string _connectionString;
-
-        public CoreDbContext(IConfiguration config,IEncryptionService encryption)
-        {
-            _encryption= encryption;
-            _config = config;
-            _connectionString = _encryption.Decrypt(_config.GetConnectionString("Default")) 
-                ?? throw new InvalidOperationException("Connection string 'Default' not found.");
-        }
-
-        public IDbConnection CreateConnection()
-            => new SqlConnection( _connectionString);
+        _encryption= encryption;
+        _config = config;
+        _connectionString = _encryption.Decrypt(_config.GetConnectionString("Default")) 
+            ?? throw new InvalidOperationException("Connection string 'Default' not found.");
     }
+
+    public IDbConnection CreateConnection()
+        => new SqlConnection( _connectionString);
 }

@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using SmagerUp.Core.API.DTOs;
 using static Dapper.SqlMapper;
+
 namespace SmagerUp.Core.API.Data.Client;
 
 public class ClientDataRepository :BaseDataRepository, IClientDataRepository {

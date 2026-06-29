@@ -1,11 +1,8 @@
 ﻿using Dapper;
-using SmagerUp.Core.API.Data.Core;
 using SmagerUp.Core.API.DTOs;
-using System.Data;
-using System.Text.Json;
 using static Dapper.SqlMapper;
 
-namespace SmagerUp.Core.API.Data.Client;
+namespace SmagerUp.Core.API.Data.Core;
 
 public class CoreDataRepository : BaseDataRepository, ICoreDataRepository
 {
@@ -17,8 +14,6 @@ public class CoreDataRepository : BaseDataRepository, ICoreDataRepository
         _ctx = ctx;
         _actions = sqlCommands;
     }
-
-
     private async Task<Models.ActionInfo> GetActionAsync(string? actionCode) {
         if (string.IsNullOrWhiteSpace(actionCode))
             throw new Exception("ActionCode is required.");
@@ -104,6 +99,5 @@ public class CoreDataRepository : BaseDataRepository, ICoreDataRepository
             };
         }
     }
-   
      
 }

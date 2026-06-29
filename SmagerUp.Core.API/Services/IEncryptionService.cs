@@ -1,8 +1,7 @@
-﻿namespace SmagerUp.Core.API.Services
+﻿namespace SmagerUp.Core.API.Services;
+
+public interface IEncryptionService
 {
-    public interface IEncryptionService
-    {
-        string Encrypt(string text);
-        string Decrypt(string cipher);
-    }
+    string Encrypt(string text);
+    string Decrypt(string cipher);
 }

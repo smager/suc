@@ -2,8 +2,8 @@
 using SmagerUp.Core.API.Models.Client;
 using System.Data;
  
-
 namespace SmagerUp.Core.API.Data.Core;
+
 public class HostRepository
 {
     private readonly CoreDbContext _ctx;

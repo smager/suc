@@ -1,26 +1,22 @@
 ﻿using Microsoft.AspNetCore.DataProtection;
 
-
-namespace SmagerUp.Core.API.Services
+namespace SmagerUp.Core.API.Services;
+public class EncryptionService : IEncryptionService
 {
+    private readonly IDataProtector _protector;
 
-    public class EncryptionService : IEncryptionService
+    public EncryptionService(IDataProtectionProvider provider)
     {
-        private readonly IDataProtector _protector;
+        _protector = provider.CreateProtector("SmagerUp.Core");
+    }
 
-        public EncryptionService(IDataProtectionProvider provider)
-        {
-            _protector = provider.CreateProtector("SmagerUp.Core");
-        }
+    public string Encrypt(string text)
+    {
+        return _protector.Protect(text);
+    }
 
-        public string Encrypt(string text)
-        {
-            return _protector.Protect(text);
-        }
-
-        public string Decrypt(string cipher)
-        {
-            return _protector.Unprotect(cipher);
-        }
+    public string Decrypt(string cipher)
+    {
+        return _protector.Unprotect(cipher);
     }
 }

@@ -1,25 +1,22 @@
 ﻿using Dapper;
 using SmagerUp.Core.API.Models;
 
-namespace SmagerUp.Core.API.Data.Client
+namespace SmagerUp.Core.API.Data.Client;
+
+public class ClientActionsRepository
 {
-    public class ClientActionsRepository
+    private readonly IClientDbResolver _db;
+
+    public ClientActionsRepository(   IClientDbResolver db)
     {
-        private readonly IClientDbResolver _db;
+        _db = db;
+    }
 
-        public ClientActionsRepository(   IClientDbResolver db)
-        {
-            _db = db;
-        }
+    public async Task<ActionInfo?> GetByCodeAsync(Guid clientId, string ActionCode)
+    {
 
-        public async Task<ActionInfo?> GetByCodeAsync(Guid clientId, string ActionCode)
-        {
+        using var conn =_db.CreateConnection(clientId);
 
-            using var conn =_db.CreateConnection(clientId);
-
-            return await conn.QueryFirstOrDefaultAsync<ActionInfo>("dbo.su_actions_sel", new { ActionCode = ActionCode },commandType:System.Data.CommandType.StoredProcedure);
-        }
-
-
+        return await conn.QueryFirstOrDefaultAsync<ActionInfo>("dbo.su_actions_sel", new { ActionCode = ActionCode },commandType:System.Data.CommandType.StoredProcedure);
     }
 }
