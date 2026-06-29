@@ -4,11 +4,9 @@ namespace SmagerUp.Core.API.Data.Client;
 
 public interface ICoreDataRepository
 {
-    Task<object> GetDataAsync(
-        Guid? userId,
+    Task<object> ExecuteAsync(
+        Guid userId,
         DataRequest request);
 
-    Task<object> ExecuteCmdAsync(
-        Guid? userId,
-        DataRequest request);
+  
 }

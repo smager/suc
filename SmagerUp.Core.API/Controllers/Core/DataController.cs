@@ -1,24 +1,23 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SmagerUp.Core.API.Controllers;
 using SmagerUp.Core.API.Data.Client;
 using SmagerUp.Core.API.DTOs;
 
-namespace SmagerUp.Core.API.Controllers.Client{
+namespace SmagerUp.Core.API.Controllers.Core{
     [ApiController]
-    [Route("client/data")]
+    [Route("core/data")]
     [Authorize]
     public class DataController : SucController
     {
-        private readonly IClientDataRepository _data;
+        private readonly ICoreDataRepository _data;
 
-        public DataController(IClientDataRepository data){
+        public DataController(ICoreDataRepository data){
             _data = data;
         }
 
         [HttpPost("execute")]
         public async Task<IActionResult> Execute([FromBody] DataRequest request){
-            return Ok( await _data.ExecuteAsync(ClientId,UserId,request));
+            return Ok( await _data.ExecuteAsync(UserId,request));
         }
  
     } 

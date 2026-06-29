@@ -3,10 +3,11 @@ using SmagerUp.Core.API.Data.Core;
 using SmagerUp.Core.API.DTOs;
 using System.Data;
 using System.Text.Json;
+using static Dapper.SqlMapper;
 
 namespace SmagerUp.Core.API.Data.Client;
 
-public class CoreDataRepository : ICoreDataRepository
+public class CoreDataRepository : BaseDataRepository, ICoreDataRepository
 {
     private readonly CoreDbContext _ctx;
     private readonly CoreActionsRepository _actions;
@@ -17,257 +18,92 @@ public class CoreDataRepository : ICoreDataRepository
         _actions = sqlCommands;
     }
 
-    public async Task<object> GetDataAsync(Guid? userId,DataRequest request)
-    {
-        try
-        {
-            if (string.IsNullOrWhiteSpace(request.ActionCode))
-            {
-                return new
-                {
-                    isSuccess = false,
-                    errMsg = "ActionCode is required."
-                };
-            }
 
-            var action = await _actions.GetByCodeAsync(request.ActionCode);
+    private async Task<Models.ActionInfo> GetActionAsync(string? actionCode) {
+        if (string.IsNullOrWhiteSpace(actionCode))
+            throw new Exception("ActionCode is required.");
 
-            if (action == null)
-            {
-                return new
-                {
-                    isSuccess = false,
-                    errMsg = $"ActionCode '{request.ActionCode}' not found."
-                };
-            }
+        var action = await _actions.GetByCodeAsync(actionCode);
 
-            using var conn = _ctx.CreateConnection();
+        if (action == null)
+            throw new Exception($"ActionCode '{actionCode}' not found.");
 
-            var p =
-                BuildParameters(
-                    userId,
-                    request);
-
-            using var multi =
-                await conn.QueryMultipleAsync(
-                    action.CommandText,
-                    p,
-                    commandType:
-                        action.CommandType == "Y"
-                            ? CommandType.StoredProcedure
-                            : CommandType.Text);
-
-            var datasets = new List<object>();
-
-            while (!multi.IsConsumed)
-            {
-                datasets.Add(
-                    (await multi.ReadAsync()).ToList());
-            }
-
-            object result = new { };
-
-            if (datasets.Count > 1)
-            {
-                var lastDataset =
-                    (IEnumerable<object>)datasets[^1];
-
-                result =
-                    lastDataset.FirstOrDefault()
-                    ?? new { };
-
-                datasets.RemoveAt(
-                    datasets.Count - 1);
-            }
-
-            return new
-            {
-                isSuccess = true,
-                result,
-                datasets
-            };
-        }
-        catch (Exception ex)
-        {
-            return new
-            {
-                isSuccess = false,
-                errMsg = ex.Message
-            };
-        }
+        return action;
     }
-
-    public async Task<object> ExecuteCmdAsync( Guid? userId,DataRequest request)
-    {
-        try
-        {
-            if (string.IsNullOrWhiteSpace(request.ActionCode))
-            {
-                return new
-                {
-                    isSuccess = false,
-                    errMsg = "ActionCode is required."
-                };
-            }
-
-            var action =
-                await _actions.GetByCodeAsync(request.ActionCode);
-
-            if (action == null)
-            {
-                return new
-                {
-                    isSuccess = false,
-                    errMsg = $"ActionCode '{request.ActionCode}' not found."
-                };
-            }
-
-            using var conn = _ctx.CreateConnection();
-
-            var p =BuildParameters(userId,request);
-
-            using var multi =
-                await conn.QueryMultipleAsync(
-                    action.CommandText,
-                    p,
-                    commandType:
-                        action.CommandType == "Y"
-                            ? CommandType.StoredProcedure
-                            : CommandType.Text);
-
-            object result = new { };
-
-            if ( !multi.IsConsumed)
-            {
-                var rows =
-                    (await multi.ReadAsync())
-                    .ToList();
-
-                result =
-                    rows.FirstOrDefault()
-                    ?? new { };
-            }
-
-            return new
-            {
-                isSuccess = true,
-                result
-            };
-        }
-        catch (Exception ex)
-        {
-            return new
-            {
-                isSuccess = false,
-                errMsg = ex.Message
-            };
-        }
+    private async Task<T> ExecuteRequestAsync<T>( Guid userId,Models.ActionInfo action,DataRequest request, Func<GridReader, Task<T>> handler) {
+        using var conn = _ctx.CreateConnection();
+        var p = BuildParameters(userId,request);
+        using var multi = await conn.QueryMultipleAsync(action.CommandText,p,commandType:GetDbCommandType(action.CommandType));
+        return await handler(multi);
     }
+    public async Task<object> ExecuteAsync(Guid userId,DataRequest request){
+        var action =   await GetActionAsync(request.ActionCode);
 
-    private DynamicParameters BuildParameters(  Guid? userId,DataRequest request)
-    {
-        var p = new DynamicParameters();
+        return action.ActionType switch{
+            "Q" => await RunQueryAsync(userId,request),
 
+            "C" => await RunCommandAsync(userId,request),
 
-        if (request.Parameters != null)
-        {
-            foreach (var item in request.Parameters)
-            {
-
-                object value = item.Value;
-
-                if (value is JsonElement je)
-                {
-                    value = ConvertJsonElement(je);
-                }
-
-                p.Add(
-                    item.Key,
-                    value);
-            }
-        }
-
-        if (userId != Guid.Empty &&  userId != null)
-        {
-            p.Add(
-                "UserId",
-                userId);
-        }
-
-        if (request.Rows?.Any() == true)
-        {
-            var dt =
-                ToDataTable(
-                    request.Rows);
-
-            p.Add(
-                "tt",
-                dt.AsTableValuedParameter());
-        }
-
-        return p;
+            _ => throw new Exception(
+                    $"Unsupported ActionType '{action.ActionType}'.")
+        };
     }
-
-    private object? ConvertJsonElement(
-    JsonElement element)
+    public async Task<object> RunQueryAsync( Guid userId, DataRequest request) {
+    try
     {
-        switch (element.ValueKind)
+        var action =await GetActionAsync(request.ActionCode);
+
+        switch (action.CommandType)
         {
-            case JsonValueKind.String:
-                return element.GetString();
-
-            case JsonValueKind.Number:
-
-                if (element.TryGetInt32(out int i))
-                    return i;
-
-                if (element.TryGetInt64(out long l))
-                    return l;
-
-                if (element.TryGetDecimal(out decimal d))
-                    return d;
-
-                return element.ToString();
-
-            case JsonValueKind.True:
-                return true;
-
-            case JsonValueKind.False:
-                return false;
-
-            case JsonValueKind.Null:
-                return null;
+            case "P":
+            case "T": return await ExecuteRequestAsync( userId, action, request, GetDataResultAsync);
+            case "G":  return new {
+                        isSuccess = true,
+                        result = new { },
+                        datasets = new[] {
+                            await ExecuteGraphQlAsync(action,request.Parameters)
+                        }
+                    };
 
             default:
-                return element.ToString();
+                throw new Exception(
+                    $"Unsupported CommandType '{action.CommandType}'.");
         }
     }
-
-    private DataTable ToDataTable( List<Dictionary<string, object?>> rows)
+    catch (Exception ex)
     {
-        var dt = new DataTable();
-
-        if (!rows.Any())
-            return dt;
-
-        foreach (var column in rows[0].Keys)
+        return new
         {
-            dt.Columns.Add(column);
-        }
-
-        foreach (var row in rows)
-        {
-            var dr = dt.NewRow();
-
-            foreach (var item in row)
-            {
-                dr[item.Key] =
-                    item.Value ?? DBNull.Value;
-            }
-
-            dt.Rows.Add(dr);
-        }
-
-        return dt;
+            isSuccess = false,
+            errMsg = ex.Message
+        };
     }
+}
+    public async Task<object> RunCommandAsync(Guid userId,DataRequest request) {
+        try
+        {
+            var action = await GetActionAsync( request.ActionCode);
+
+            switch (action.CommandType)
+            {
+                case "P":
+                case "T":   return await ExecuteRequestAsync(userId,action,request, GetActionResultAsync);
+
+                case "G":   return new {
+                                isSuccess   = true,  
+                                result      = await ExecuteGraphQlAsync( action,  request.Parameters)
+                            };
+
+                default:    throw new Exception($"Unsupported CommandType '{action.CommandType}'.");
+            }
+        }
+        catch (Exception ex) {
+            return new {
+                isSuccess = false,
+                errMsg = ex.Message
+            };
+        }
+    }
+   
+     
 }

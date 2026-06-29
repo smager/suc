@@ -4,10 +4,10 @@ using SmagerUp.Core.API.Data.Core;
 using SmagerUp.Core.API.DTOs.Client;
 using SmagerUp.Core.API.Models.Client;
 using SmagerUp.Core.API.Services;
-namespace SmagerUp.Core.API.Controllers.Client
+namespace SmagerUp.Core.API.Controllers
 {
     [ApiController]
-    [Route("client")]
+    [Route("auth")]
     public class AuthController : SucController
     {
         private readonly UserRepository _users;
