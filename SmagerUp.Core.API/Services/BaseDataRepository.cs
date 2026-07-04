@@ -10,46 +10,38 @@ namespace SmagerUp.Core.API.Data;
 
 public abstract class BaseDataRepository
 {
+    /// <summary>Query multiple datasets from the database and return them as a list of objects.</summary>
     protected async Task<object> GetDataResultAsync(GridReader multi)
     {
-        var datasets = new List<object>();
+        var data = new List<object>();
 
         while (!multi.IsConsumed)
         {
-            datasets.Add((await multi.ReadAsync()).ToList());
-        }
-
-        object result = new { };
-
-        if (datasets.Count > 1)
-        {
-            var last = (IEnumerable<object>)datasets[^1];
-            result = last.FirstOrDefault() ?? new { };
-            datasets.RemoveAt(datasets.Count - 1);
+            data.Add((await multi.ReadAsync()).ToList());
         }
 
         return new
         {
             isSuccess = true,
-            result,
-            datasets
+            data
         };
     }
 
+    /// <summary>Query a single dataset from the database and return it as an object.</summary>
     protected async Task<object> GetActionResultAsync(GridReader multi)
     {
-        object result = new { };
+        object data = new { };
 
         if (!multi.IsConsumed)
         {
             var rows = (await multi.ReadAsync()).ToList();
-            result = rows.FirstOrDefault() ?? new { };
+            data = rows.FirstOrDefault() ?? new { };
         }
 
         return new
         {
             isSuccess = true,
-            result
+            data
         };
     }
 

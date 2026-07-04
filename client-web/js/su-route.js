@@ -60,7 +60,8 @@ class Router {
         if( route.indexOf("?") > -1 )
             route = route.substring( 0,route.indexOf("?"));
 
-        if(route =="") route ="/p/home";        
+        if(route =="") route ="/p/home";
+        console.log("route",route);        
         await this.render(route +".html");
     }
     
