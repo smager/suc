@@ -6,17 +6,13 @@ namespace SmagerUp.Core.API.Data.Core;
 public class CoreDataRepository : BaseDataRepository, ICoreDataRepository
 {
     private readonly CoreDbContext _ctx;
-    private readonly CoreActionsRepository _actions;
 
-    public CoreDataRepository(CoreDbContext ctx,CoreActionsRepository sqlCommands)
+    public CoreDataRepository(CoreDbContext ctx)
     {
         _ctx = ctx;
-        _actions = sqlCommands;
         this.connection = _ctx.CreateConnection();
     }
 
-
-   
     public async Task<object> ExecuteAsync(Guid userId,DataRequest request){
         try{
             this.clientId = Guid.Empty;
