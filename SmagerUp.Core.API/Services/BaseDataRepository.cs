@@ -1,48 +1,156 @@
-﻿
-using Dapper;
+﻿using Dapper;
 using SmagerUp.Core.API.DTOs;
 using SmagerUp.Core.API.Models;
 using System.Data;
+using System.Reflection;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using static Dapper.SqlMapper;
 
 namespace SmagerUp.Core.API.Data;
 
-public abstract class BaseDataRepository
-{
+ 
+
+public abstract class BaseDataRepository {
+    protected IDbConnection connection;
+    protected Guid clientId;
+
+     
     /// <summary>Query multiple datasets from the database and return them as a list of objects.</summary>
-    protected async Task<object> GetDataResultAsync(GridReader multi)
-    {
-        var data = new List<object>();
+    protected async Task<object> GetDataResultAsync(GridReader multi, string ActionType)
+    { 
+        try{
+            var dataSets = new List<List<object>>();
+            while (!multi.IsConsumed)
+            {
+                dataSets.Add((await multi.ReadAsync()).ToList());
+            }
 
-        while (!multi.IsConsumed)
-        {
-            data.Add((await multi.ReadAsync()).ToList());
+            return new {
+                isSuccess = true,
+                ActionType,
+                dataSets
+            }; 
+
         }
-
-        return new
-        {
-            isSuccess = true,
-            data
+        catch (Exception ex)
+      {
+        return new {
+            isSuccess = false,
+            errorMessage = ex.Message
         };
+        } 
     }
 
-    /// <summary>Query a single dataset from the database and return it as an object.</summary>
-    protected async Task<object> GetActionResultAsync(GridReader multi)
+    public async Task<ActionInfo?> GetByCodeAsync(string? ActionCode)
     {
-        object data = new { };
+        var sp = "dbo.su_actions_sel";
+        if (clientId == Guid.Empty) sp = "dbo.actions_sel";
 
-        if (!multi.IsConsumed)
+        return await this.connection.QueryFirstOrDefaultAsync<ActionInfo>(sp, new { ActionCode = ActionCode }, commandType: System.Data.CommandType.StoredProcedure);
+    }
+
+    protected async Task<T> ExecuteRequestAsync<T>(Guid userId,Models.ActionInfo action,DataRequest request, Func<GridReader,string, Task<T>> handler) {
+       // using var conn = _clientDb.CreateConnection(clientId);
+        var p = BuildParameters(userId,request);
+        using var multi = await connection.QueryMultipleAsync(action.CommandText,p,commandType:GetDbCommandType(action.CommandType));
+        return await handler(multi, action.ActionType.ToUpper());
+    }
+
+    protected async Task<Models.ActionInfo> GetActionAsync( string? actionCode) {
+    if (string.IsNullOrWhiteSpace(actionCode))
+        throw new Exception("ActionCode is required.");
+
+    var action = await GetByCodeAsync(actionCode);
+
+    if (action == null)
+        throw new Exception($"ActionCode '{actionCode}' not found.");
+
+        return action;
+    }
+
+    protected async Task<object> RunQueryAsync(Guid userId, DataRequest request, ActionInfo action) {
+    try
+    {
+       // var action =await GetActionAsync(request.ActionCode);
+
+        switch (action.CommandType)
         {
-            var rows = (await multi.ReadAsync()).ToList();
-            data = rows.FirstOrDefault() ?? new { };
-        }
+            case "P":
+            case "T": return await ExecuteRequestAsync(userId, action, request, GetDataResultAsync);
+            case "G":  return new {
+                        isSuccess = true,
+                        result = new { },
+                        datasets = new[] {
+                            await ExecuteGraphQlAsync(action,request.Parameters)
+                        }
+                    };
 
+            default:
+                throw new Exception(
+                    $"Unsupported CommandType '{action.CommandType}'.");
+        }
+    }
+    catch (Exception ex)
+    {
         return new
         {
-            isSuccess = true,
-            data
+            isSuccess = false,
+             errMsg =  SanitizeSqlError(ex.Message)
         };
+    }
+}
+
+    protected async Task<object> RunCommandAsync(Guid userId,DataRequest request, ActionInfo action) {
+    try
+    {
+        //var action =await GetActionAsync( request.ActionCode);
+
+        switch (action.CommandType)
+        {
+            case "P":
+            case "T":   return await ExecuteRequestAsync(userId,action,request, GetActionResultAsync);
+
+            case "G":   return new {
+                            isSuccess   = true,  
+                            result      = await ExecuteGraphQlAsync( action,  request.Parameters)
+                        };
+
+            default:    throw new Exception($"Unsupported CommandType '{action.CommandType}'.");
+        }
+    }
+    catch (Exception ex) {
+        return new {
+            isSuccess = false,
+             errMsg =  SanitizeSqlError(ex.Message)
+        };
+    }
+}
+   
+
+    /// <summary>Query a single dataset from the database and return it as an object.</summary>
+    protected async Task<object> GetActionResultAsync(GridReader multi,string ActionType)
+    {
+        try{
+            object data = new { };
+            if (!multi.IsConsumed)
+            {
+                var rows = (await multi.ReadAsync()).ToList();
+                data = rows.FirstOrDefault() ?? new { };
+            }
+
+            return new {
+                isSuccess = true,
+                ActionType,
+                returnInfo = data
+            }; 
+
+        } catch (Exception ex) {
+            return new {
+                isSuccess = false,
+                errorMessage = ex.Message
+            };
+        } 
     }
 
     protected DynamicParameters BuildParameters(Guid userId,DataRequest request)
@@ -144,6 +252,21 @@ public abstract class BaseDataRepository
         }
 
         return new { };
+    }
+
+    
+    protected string SanitizeSqlError(string message){
+        if (string.IsNullOrWhiteSpace(message))
+            return message;
+
+            var match = Regex.Match(message,@"expects parameter '@?(\w+)'",RegexOptions.IgnoreCase);
+
+        if (match.Success)
+        {
+            return $"Required field '{match.Groups[1].Value}' was not supplied.";
+        }
+
+        return message;
     }
 }
  

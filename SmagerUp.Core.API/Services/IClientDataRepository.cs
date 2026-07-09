@@ -7,4 +7,5 @@ public interface IClientDataRepository {
         Guid clientId,
         Guid userId,
         DataRequest request);    
+
 }

@@ -1,5 +1,4 @@
-﻿using Dapper;
-using SmagerUp.Core.API.DTOs;
+﻿using SmagerUp.Core.API.DTOs;
 using static Dapper.SqlMapper;
 
 namespace SmagerUp.Core.API.Data.Core;
@@ -13,91 +12,35 @@ public class CoreDataRepository : BaseDataRepository, ICoreDataRepository
     {
         _ctx = ctx;
         _actions = sqlCommands;
+        this.connection = _ctx.CreateConnection();
     }
-    private async Task<Models.ActionInfo> GetActionAsync(string? actionCode) {
-        if (string.IsNullOrWhiteSpace(actionCode))
-            throw new Exception("ActionCode is required.");
 
-        var action = await _actions.GetByCodeAsync(actionCode);
 
-        if (action == null)
-            throw new Exception($"ActionCode '{actionCode}' not found.");
-
-        return action;
-    }
-    private async Task<T> ExecuteRequestAsync<T>( Guid userId,Models.ActionInfo action,DataRequest request, Func<GridReader, Task<T>> handler) {
-        using var conn = _ctx.CreateConnection();
-        var p = BuildParameters(userId,request);
-        using var multi = await conn.QueryMultipleAsync(action.CommandText,p,commandType:GetDbCommandType(action.CommandType));
-        return await handler(multi);
-    }
+   
     public async Task<object> ExecuteAsync(Guid userId,DataRequest request){
-        var action =   await GetActionAsync(request.ActionCode);
+        try{
+            this.clientId = Guid.Empty;
+            var action =   await this.GetActionAsync(request.ActionCode);
 
-        return action.ActionType switch{
-            "Q" => await RunQueryAsync(userId,request),
+            return action.ActionType.ToUpper() switch{
+                "Q" => await RunQueryAsync(userId,request, action),
 
-            "C" => await RunCommandAsync(userId,request),
+                "C" => await RunCommandAsync(userId,request, action),
 
-            _ => throw new Exception(
-                    $"Unsupported ActionType '{action.ActionType}'.")
-        };
-    }
-    public async Task<object> RunQueryAsync( Guid userId, DataRequest request) {
-    try
-    {
-        var action =await GetActionAsync(request.ActionCode);
+                _ => throw new Exception(
+                        $"Unsupported ActionType '{action.ActionType}'.")
+            };
 
-        switch (action.CommandType)
-        {
-            case "P":
-            case "T": return await ExecuteRequestAsync( userId, action, request, GetDataResultAsync);
-            case "G":  return new {
-                        isSuccess = true,
-                        result = new { },
-                        datasets = new[] {
-                            await ExecuteGraphQlAsync(action,request.Parameters)
-                        }
-                    };
-
-            default:
-                throw new Exception(
-                    $"Unsupported CommandType '{action.CommandType}'.");
         }
-    }
-    catch (Exception ex)
-    {
-        return new
+        catch (Exception ex)
         {
-            isSuccess = false,
-            errMsg = ex.Message
-        };
-    }
-}
-    public async Task<object> RunCommandAsync(Guid userId,DataRequest request) {
-        try
-        {
-            var action = await GetActionAsync( request.ActionCode);
-
-            switch (action.CommandType)
+            return new
             {
-                case "P":
-                case "T":   return await ExecuteRequestAsync(userId,action,request, GetActionResultAsync);
-
-                case "G":   return new {
-                                isSuccess   = true,  
-                                result      = await ExecuteGraphQlAsync( action,  request.Parameters)
-                            };
-
-                default:    throw new Exception($"Unsupported CommandType '{action.CommandType}'.");
-            }
-        }
-        catch (Exception ex) {
-            return new {
                 isSuccess = false,
-                errMsg = ex.Message
+                errMsg =  ex.Message
             };
         }
-    }
-     
+
+    } 
+
 }

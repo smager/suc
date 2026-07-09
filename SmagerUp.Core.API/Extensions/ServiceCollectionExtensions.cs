@@ -19,7 +19,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ClientRepository>();
         services.AddScoped<CoreRepository>();
         services.AddScoped<UserRepository>();
-        services.AddScoped<ClientActionsRepository>();
         services.AddScoped<CoreActionsRepository>();
 
         services.AddScoped<IClientDataRepository, ClientDataRepository>();

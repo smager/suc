@@ -7,6 +7,5 @@ public interface ICoreDataRepository
     Task<object> ExecuteAsync(
         Guid userId,
         DataRequest request);
-
   
 }
