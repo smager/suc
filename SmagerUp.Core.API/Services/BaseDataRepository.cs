@@ -2,157 +2,64 @@
 using SmagerUp.Core.API.DTOs;
 using SmagerUp.Core.API.Models;
 using System.Data;
-using System.Reflection;
+using System.Data.Common;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using static Dapper.SqlMapper;
 
 namespace SmagerUp.Core.API.Data;
 
- 
-
 public abstract class BaseDataRepository {
     protected IDbConnection connection;
     protected Guid clientId;
-
-     
-    /// <summary>Query multiple datasets from the database and return them as a list of objects.</summary>
-    protected async Task<object> GetDataResultAsync(GridReader multi, string ActionType)
-    { 
-        try{
-            var dataSets = new List<List<object>>();
-            while (!multi.IsConsumed)
-            {
-                dataSets.Add((await multi.ReadAsync()).ToList());
-            }
-
-            return new {
-                isSuccess = true,
-                ActionType,
-                dataSets
-            }; 
-
-        }
-        catch (Exception ex)
-      {
-        return new {
-            isSuccess = false,
-            errorMessage = ex.Message
-        };
-        } 
-    }
 
     public async Task<ActionInfo?> GetByCodeAsync(string? ActionCode)
     {
         var sp = "dbo.su_actions_sel";
         if (clientId == Guid.Empty) sp = "dbo.actions_sel";
 
-        return await this.connection.QueryFirstOrDefaultAsync<ActionInfo>(sp, new { ActionCode = ActionCode }, commandType: System.Data.CommandType.StoredProcedure);
+        return await this.connection.QueryFirstOrDefaultAsync<ActionInfo>(sp, new { ActionCode }, commandType:CommandType.StoredProcedure);
     }
+    protected async Task<object> ExecuteRequestAsync(Guid userId,ActionInfo action,DataRequest request)
+    {
+        var p = BuildParameters(userId, request);
 
-    protected async Task<T> ExecuteRequestAsync<T>(Guid userId,Models.ActionInfo action,DataRequest request, Func<GridReader,string, Task<T>> handler) {
-       // using var conn = _clientDb.CreateConnection(clientId);
-        var p = BuildParameters(userId,request);
-        using var multi = await connection.QueryMultipleAsync(action.CommandText,p,commandType:GetDbCommandType(action.CommandType));
-        return await handler(multi, action.ActionType.ToUpper());
+        using var reader =   (DbDataReader)await connection.ExecuteReaderAsync(action.CommandText,p,commandType: GetDbCommandType(action.CommandType));
+
+        return await BuildResponseAsync(reader, action);
     }
+    protected async Task<ActionInfo> GetActionAsync( string? actionCode) {
+        if (string.IsNullOrWhiteSpace(actionCode))
+            throw new Exception("ActionCode is required.");
 
-    protected async Task<Models.ActionInfo> GetActionAsync( string? actionCode) {
-    if (string.IsNullOrWhiteSpace(actionCode))
-        throw new Exception("ActionCode is required.");
+        var action = await GetByCodeAsync(actionCode);
 
-    var action = await GetByCodeAsync(actionCode);
-
-    if (action == null)
-        throw new Exception($"ActionCode '{actionCode}' not found.");
+        if (action == null) throw new Exception($"ActionCode '{actionCode}' not found.");
 
         return action;
     }
-
-    protected async Task<object> RunQueryAsync(Guid userId, DataRequest request, ActionInfo action) {
-    try
-    {
-       // var action =await GetActionAsync(request.ActionCode);
-
-        switch (action.CommandType)
+    protected async Task<object> RunActionAsync(Guid userId,DataRequest request, ActionInfo action) {
+        try
         {
-            case "P":
-            case "T": return await ExecuteRequestAsync(userId, action, request, GetDataResultAsync);
-            case "G":  return new {
-                        isSuccess = true,
-                        result = new { },
-                        datasets = new[] {
-                            await ExecuteGraphQlAsync(action,request.Parameters)
-                        }
-                    };
-
-            default:
-                throw new Exception(
-                    $"Unsupported CommandType '{action.CommandType}'.");
-        }
-    }
-    catch (Exception ex)
-    {
-        return new
-        {
-            isSuccess = false,
-             errMsg =  SanitizeSqlError(ex.Message)
-        };
-    }
-}
-
-    protected async Task<object> RunCommandAsync(Guid userId,DataRequest request, ActionInfo action) {
-    try
-    {
-        //var action =await GetActionAsync( request.ActionCode);
-
-        switch (action.CommandType)
-        {
-            case "P":
-            case "T":   return await ExecuteRequestAsync(userId,action,request, GetActionResultAsync);
-
-            case "G":   return new {
-                            isSuccess   = true,  
-                            result      = await ExecuteGraphQlAsync( action,  request.Parameters)
-                        };
-
-            default:    throw new Exception($"Unsupported CommandType '{action.CommandType}'.");
-        }
-    }
-    catch (Exception ex) {
-        return new {
-            isSuccess = false,
-             errMsg =  SanitizeSqlError(ex.Message)
-        };
-    }
-}
-   
-
-    /// <summary>Query a single dataset from the database and return it as an object.</summary>
-    protected async Task<object> GetActionResultAsync(GridReader multi,string ActionType)
-    {
-        try{
-            object data = new { };
-            if (!multi.IsConsumed)
+            switch (action.CommandType)
             {
-                var rows = (await multi.ReadAsync()).ToList();
-                data = rows.FirstOrDefault() ?? new { };
+                case "P":
+                case "T":   return await ExecuteRequestAsync(userId,action,request);
+
+                case "G":   return new {
+                                ok   = true,  
+                                result  = await ExecuteGraphQlAsync( action,  request.Parameters)
+                            };
+                default:    throw new Exception($"Unsupported CommandType '{action.CommandType}'.");
             }
-
+        }
+        catch (Exception ex) {
             return new {
-                isSuccess = true,
-                ActionType,
-                returnInfo = data
-            }; 
-
-        } catch (Exception ex) {
-            return new {
-                isSuccess = false,
-                errorMessage = ex.Message
+                ok = false,
+                 errMsg =  SanitizeSqlError(ex.Message)
             };
-        } 
-    }
-
+        }
+    } 
     protected DynamicParameters BuildParameters(Guid userId,DataRequest request)
     {
         var p = new DynamicParameters();
@@ -178,7 +85,6 @@ public abstract class BaseDataRepository {
 
         return p;
     }
-
     protected DataTable ToDataTable(List<Dictionary<string, object?>> rows){
         var dt = new DataTable();
 
@@ -205,7 +111,6 @@ public abstract class BaseDataRepository {
 
         return dt;
     }
-
     protected CommandType GetDbCommandType(string commandType){
         return commandType switch
         {
@@ -215,7 +120,6 @@ public abstract class BaseDataRepository {
                 $"Unsupported CommandType '{commandType}'.")
         };
     }
-
     protected async Task<object> ExecuteGraphQlAsync(ActionInfo action,Dictionary<string, object>? parameters = null)    {
         var config =JsonSerializer.Deserialize<SmagerUp.Core.API.Models.GraphQL.GraphQlConfig>(action.CommandText);
 
@@ -253,8 +157,6 @@ public abstract class BaseDataRepository {
 
         return new { };
     }
-
-    
     protected string SanitizeSqlError(string message){
         if (string.IsNullOrWhiteSpace(message))
             return message;
@@ -268,5 +170,136 @@ public abstract class BaseDataRepository {
 
         return message;
     }
+    protected async Task<object> BuildResponseAsync(DbDataReader reader, ActionInfo action){
+        switch (action.ResponseFormat?.ToUpper())
+        {
+            case "R":
+                return await GetRowsAsync(reader);
+
+            case "C":
+                return await GetColumnsAsync(reader);
+
+            case "O":
+                return await GetObjectAsync(reader);
+
+            case "S":
+                return await GetScalarAsync(reader);
+
+            default:
+                throw new Exception(
+                    $"Unsupported ResponseFormat '{action.ResponseFormat}'.");
+        }
+    }
+    protected async Task<object> GetRowsAsync(DbDataReader reader)
+    {
+        var result = new List<List<Dictionary<string, object?>>>();
+        do
+        {
+            var rows = new List<Dictionary<string, object?>>();
+
+            while (await reader.ReadAsync())
+            {
+                var row = new Dictionary<string, object?>();
+
+                for (int i = 0; i < reader.FieldCount; i++)
+                {
+                    row.Add(
+                        reader.GetName(i),
+                        await reader.IsDBNullAsync(i)
+                            ? null
+                            : reader.GetValue(i));
+                }
+
+                rows.Add(row);
+            }
+
+            result.Add(rows);
+
+        } while (await reader.NextResultAsync());
+
+        return new
+        {
+            ok = true,
+            result
+        };
+    }
+    protected async Task<object> GetObjectAsync(DbDataReader reader)
+    {
+        Dictionary<string, object?>? row = null;
+
+        if (await reader.ReadAsync())
+        {
+            row = new();
+
+            for (int i = 0; i < reader.FieldCount; i++)
+            {
+                row.Add(
+                    reader.GetName(i),
+                    await reader.IsDBNullAsync(i)
+                        ? null
+                        : reader.GetValue(i));
+            }
+        }
+
+        return new
+        {
+            ok = true,
+            result = row
+        };
+    }
+    protected async Task<object> GetScalarAsync(DbDataReader reader)
+    {
+        object? value = null;
+
+        if (await reader.ReadAsync())
+        {
+            value = await reader.IsDBNullAsync(0)
+                ? null
+                : reader.GetValue(0);
+        }
+
+        return new
+        {
+            ok = true,
+            result = value
+        };
+    }
+    protected async Task<object> GetColumnsAsync(DbDataReader reader)
+    {
+        var result = new List<object>();
+
+        do
+        {
+            var columns = Enumerable
+                .Range(0, reader.FieldCount)
+                .Select(reader.GetName)
+                .ToArray();
+
+            var rows = new List<object[]>();
+
+            while (await reader.ReadAsync())
+            {
+                var values = new object[reader.FieldCount];
+
+                reader.GetValues(values);
+
+                rows.Add(values);
+            }
+
+            result.Add(new
+            {
+                c = columns,
+                r = rows
+            });
+
+        } while (await reader.NextResultAsync());
+
+        return new
+        {
+            ok = true,
+            result
+        };
+    }
+
 }
  

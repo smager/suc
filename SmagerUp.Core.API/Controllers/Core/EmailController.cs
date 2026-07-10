@@ -26,7 +26,7 @@ public class EmailController : SucController
         {
             return BadRequest(new
             {
-                isSuccess = false,
+                ok = false,
                 message = "Recipient cannot be empty."
             });
         }
@@ -42,7 +42,7 @@ public class EmailController : SucController
 
             return Ok(new
             {
-                isSuccess = true,
+                ok = true,
                 message = "Message sent."
             });
         }
@@ -50,7 +50,7 @@ public class EmailController : SucController
         {
             return BadRequest(new
             {
-                isSuccess = false,
+                ok = false,
                 message = ex.Message
             });
         }

@@ -46,7 +46,7 @@ public class CoreController : SucController
 
         dynamic res = await _data.ExecuteAsync(this.UserId, request);
 
-        if (!res.isSuccess)
+        if (!res.ok)
             return BadRequest(res);
 
         string redirectUrl = res.result.redirectUrl;

@@ -17,22 +17,13 @@ public class CoreDataRepository : BaseDataRepository, ICoreDataRepository
         try{
             this.clientId = Guid.Empty;
             var action =   await this.GetActionAsync(request.ActionCode);
-
-            return action.ActionType.ToUpper() switch{
-                "Q" => await RunQueryAsync(userId,request, action),
-
-                "C" => await RunCommandAsync(userId,request, action),
-
-                _ => throw new Exception(
-                        $"Unsupported ActionType '{action.ActionType}'.")
-            };
-
+            return await RunActionAsync(userId,request, action);
         }
         catch (Exception ex)
         {
             return new
             {
-                isSuccess = false,
+                ok = false,
                 errMsg =  ex.Message
             };
         }
