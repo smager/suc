@@ -1,13 +1,24 @@
-:root {
-    --bs-btn-bg: #6788b9;
-    --bg1: #406eb2;
-    --bg1-down1: #385d94;
+[data-bs-theme="dark"] {
+    --bs-btn-bg: #4675bbdb;
+    --bg1: #385d94db;
+    --bg1-down1: #2c4974db;
+    --hero-bg: linear-gradient(135deg, #406eb257, #385d945c);
+
+
+    --card-bg: var(--bs-dark);
+    --card-color: var(--bs-light);
+    --bs-secondary-color: #dfeffc;
+       
 }
 
-/*
-[data-bs-theme="dark"] {}
-[data-bs-theme="light"] {}
-*/
+[data-bs-theme="light"] {
+    --bs-btn-bg: #4675bb;
+    --bg1: #385d94;
+    --bg1-down1: #2c4974;
+    --hero-bg: linear-gradient(135deg, #406eb2, #385d94);    
+    --bs-secondary-color: #2a577d;
+}
+
 .text-primary { 
     color:var(--bg1) !important;
 }
@@ -31,7 +42,7 @@ nav.navbar {
 
 .hero {
     padding: 100px 0;
-    background: linear-gradient(135deg,var(--bg1),var(--bg1-down1));
+    background: var(--hero-bg);
     color: var(--bs-body-color);
 }
 .feature-card,.price-card{
@@ -67,4 +78,8 @@ section#pricing, li.pricing
     --bs-btn-disabled-color: #fff;
     --bs-btn-disabled-bg:var(--bg1);
     --bs-btn-disabled-border-color:var(--bg1-down1);
+}
+.card {
+  --bs-card-bg: var(--card-bg);
+  --bs-card-color: var(--card-color);
 }
