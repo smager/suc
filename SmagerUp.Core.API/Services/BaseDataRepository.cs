@@ -288,8 +288,8 @@ public abstract class BaseDataRepository {
 
             result.Add(new
             {
-                c = columns,
-                r = rows
+                columns,
+                rows
             });
 
         } while (await reader.NextResultAsync());
