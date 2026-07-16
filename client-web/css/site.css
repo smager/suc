@@ -1,27 +1,28 @@
 [data-bs-theme="dark"] {
-    --bs-btn-bg: #4675bbdb;
-    --bg1: #385d94db;
-    --bg1-down1: #2c4974db;
+    --bg-primary: #2a3a51;
+    --bs-btn-bg: var(--bg-primary);
+    --bg1: #3c5374;
+    --bg1-down1: #2e4059;
     --hero-bg: linear-gradient(135deg, #406eb257, #385d945c);
-
-
-    --card-bg: var(--bs-dark);
+    --card-bg:#ffffff05;
     --card-color: var(--bs-light);
-    --bs-secondary-color: #dfeffc;
-       
+    --bs-secondary-color: #d2d2d2;
+    --card-icon-color: #ffffff;
 }
 
 [data-bs-theme="light"] {
-    --bs-btn-bg: #4675bb;
+    --bg-primary: #3b639e;
+    --bs-btn-bg: var(--bg-primary);
     --bg1: #385d94;
     --bg1-down1: #2c4974;
     --hero-bg: linear-gradient(135deg, #406eb2, #385d94);    
     --bs-secondary-color: #2a577d;
+    --card-icon-color:var(--bg1); 
+    
+    --card-bg:#5177af14;
+    --card-color: var(--bs-dark);
 }
 
-.text-primary { 
-    color:var(--bg1) !important;
-}
 
 .hero h1, .hero h2,.hero p {
     color: var(--bs-light);
@@ -53,7 +54,7 @@ nav.navbar {
 }
 .section{padding:80px 0}
 .footer{
-    background:#212529;
+    background:var(--bs-body-bg);
     color:var(--bs-body-color);
     padding:40px 0
 }
@@ -65,7 +66,7 @@ section#pricing, li.pricing
 
 .btn-primary {
     --bs-btn-color: #fff;
-    --bs-btn-bg: var(--bg1);
+    --bs-btn-bg: var(--bg-primary);
     --bs-btn-border-color: #7da3da;
     --bs-btn-hover-color: #fff;
     --bs-btn-hover-bg: #36598e;
@@ -83,3 +84,7 @@ section#pricing, li.pricing
   --bs-card-bg: var(--card-bg);
   --bs-card-color: var(--card-color);
 }
+
+.card .text-primary { 
+    color: var(--card-icon-color) !important;
+}   
