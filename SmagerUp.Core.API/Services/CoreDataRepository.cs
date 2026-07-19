@@ -15,7 +15,7 @@ public class CoreDataRepository : BaseDataRepository, ICoreDataRepository
 
     public async Task<object> ExecuteAsync(Guid userId,DataRequest request){
         try{
-            this.clientId = Guid.Empty;
+            //this.clientId = Guid.Empty;
             var action =   await this.GetActionAsync(request.ActionCode);
             return await RunActionAsync(userId,request, action);
         }

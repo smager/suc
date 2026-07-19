@@ -4,7 +4,7 @@
 
         async init() {
 
-            var _msgboxHtml = await su.getHtmlTemplate("pages/templates/msgbox.html");
+            var _msgboxHtml = await su.getHtmlTemplate("p/templates/msgbox.html");
 
             if($("#msgbox").length == 0){
                 $("#app").append(_msgboxHtml);

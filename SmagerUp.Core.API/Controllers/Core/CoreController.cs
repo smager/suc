@@ -28,30 +28,23 @@ public class CoreController : SucController
         var password =((JsonElement)request.Parameters["PasswordHash"]).GetString();
 
         request.Parameters["PasswordHash"] = _passwordService.HashPassword(password);
-        var result =    await _data.ExecuteAsync(this.UserId ,request);
+        var result =    await _data.ExecuteAsync(Guid.Empty ,request);
         return Ok(result);
 
     }
-    [HttpGet("verify-email")]
-    public async Task<IActionResult> VerifyEmail([FromQuery] Guid token)
+
+    [HttpPost("verify-email")]
+    public async Task<IActionResult> VerifyEmail([FromBody] JsonElement body)
     {
-        DataRequest request = new DataRequest
+        var token = body.GetProperty("token").GetString();
+        return Ok(await _data.ExecuteAsync(Guid.Empty, new DataRequest
         {
             ActionCode = "US-4F17-D671",
-            Parameters = new Dictionary<string, object>
-        {
-            { "tokenId", token }
-        }
-        };
-
-        dynamic res = await _data.ExecuteAsync(this.UserId, request);
-
-        if (!res.ok)
-            return BadRequest(res);
-
-        string redirectUrl = res.result.redirectUrl;
-
-        return Redirect(redirectUrl);
+            Parameters = new()
+            {
+                ["tokenId"] = token
+            }
+        }));
     }
 
 

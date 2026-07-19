@@ -255,7 +255,7 @@ $("#frmRegister").on("submit", async function(e){
 
     let payload = {
 
-        sqlCode: "CL-5D8B-32DB",
+        actionCode: "CL-5D8B-32DB",
         parameters: {
 
             CompanyName: $("#txtCompanyName").val(),
@@ -277,15 +277,12 @@ $("#frmRegister").on("submit", async function(e){
                 payload
             );
 
-     if(data && data.isSuccess){
+     if(data && data.ok){
         console.log(data.result);            
-      
-  
-     
-       var _body = await su.getTemplate("pages/templates/verify-email.html", 
+        var _body = await su.getTemplate("p/templates/verify-email.html", 
             {
                 ContactName: payload.parameters.FirstName + " " + payload.parameters.LastName,
-                VerifyLink: clientInfo.apiUrl + "/core/verify-email?token=" + data.result.UserId,
+                VerifyLink: su.config.baseUrl + "p/verify-email?token=" + data.result.UserId,
                 Year: new Date().getFullYear()
             }
        );

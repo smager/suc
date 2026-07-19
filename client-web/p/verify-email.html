@@ -1,0 +1,52 @@
+ <div id="result"></div>
+
+ <script>
+  async function verifyEmail() { 
+    const token = su.getUrlParamValue("token");
+ 
+    var clientInfo = su.getClientConfig();
+    let data = await su.api.post(clientInfo.apiUrl + "/core/verify-email", { token: token });
+    if(data && data.ok && data.result.isActivated){
+        var _loginLink = su.config.baseUrl + "#/p/auth/login";    
+        var _body = await su.getTemplate("p/templates/welcome-email.html?", 
+            {
+                ContactName: data.result.contactName,
+                LoginLink: _loginLink,
+                Year: new Date().getFullYear()
+            }
+        );
+
+        const result = document.querySelector("#result");
+        result.innerHTML = _body;
+
+        var _emailParams = {
+                "to":data.result.emailAdd
+                ,"subject": "Welcome to SmagerUp Core"
+                ,"body": _body
+            
+        }
+        await su.api.sendEmail(_emailParams);            
+
+        setTimeout(() => {
+            window.location.replace(_loginLink);
+        }, 10000);            
+
+     } else {
+        var _body = await su.getTemplate("p/templates/verification-failed.html?", 
+            {
+                message: "Email verification failed.",
+                Year: new Date().getFullYear()
+            }
+        );
+
+        const result = document.querySelector("#result");
+        result.innerHTML = _body;
+
+        setTimeout(() => {
+            window.location.replace( su.config.baseUrl);
+        }, 10000);
+     }
+   
+}
+verifyEmail();
+</script>

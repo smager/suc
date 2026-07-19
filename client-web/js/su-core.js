@@ -2,7 +2,7 @@
     const su = {
          version: "1.0.0"
         ,config: {
-             baseUrl        : "/"
+             baseUrl        : window.location.origin 
             ,executeUrl  : "/client/data/execute"            
         }
 
@@ -69,7 +69,33 @@
                   apiUrl: localStorage.getItem("d4d45f5f84kd")
             };
         }
-
+        ,getUrlParamValue(variable) {
+        	var source = window.location.href; 
+        	variable = variable.toLowerCase();
+        	var qLoc =  source.indexOf("?");
+        	if (qLoc >-1){
+        			var param = source.split("?");
+        		var result = param[1];  //right parameters  
+        		if (result.indexOf("&") > -1){ 
+        	 
+        			var vars = result.split("&");
+        			for (var i=0;i<vars.length;i++) {
+        				var pair = vars[i].split("=");
+        				if (pair[0].toLowerCase() == variable.toLowerCase()) {
+        	
+        					return pair[1];
+        				}
+        			}
+        		}
+        		else{
+        			var pair = result.split("=");
+        			if (pair[0].toLowerCase() == variable.toLowerCase()) {
+        				return pair[1];
+        			}
+        		}
+        	}
+        	return "";
+        }
         ,async getHtmlTemplate(url) {
               const response =await fetch(url);
              const html =await response.text();
@@ -83,6 +109,8 @@
             var html = template(data);
             return html;
         }        
+
+
 
     };
 

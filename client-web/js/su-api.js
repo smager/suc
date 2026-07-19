@@ -66,10 +66,7 @@
 
         ,async sendEmail(request ) {
             var clientInfo = su.getClientConfig();
-            return su.api.post(
-                clientInfo.apiUrl + "/email/send",
-                request
-            );
+            return su.api.post( clientInfo.apiUrl + "/email/send",request);
         }
 
         ,async getNewAccessToken( ) {

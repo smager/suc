@@ -68,7 +68,28 @@ public abstract class BaseDataRepository {
         {
             foreach (var item in request.Parameters)
             {
-                p.Add(item.Key, item.Value);
+                object value = item.Value;
+
+                if (value is JsonElement json)
+                {
+                    value = json.ValueKind switch
+                    {
+                        JsonValueKind.String => json.GetString(),
+                        JsonValueKind.Number =>
+                            json.TryGetInt64(out var l)
+                                ? l
+                                : json.GetDecimal(),
+                        JsonValueKind.True => true,
+                        JsonValueKind.False => false,
+                        JsonValueKind.Null => DBNull.Value,
+                        JsonValueKind.Undefined => DBNull.Value,
+                        JsonValueKind.Array => json.ToString(),
+                        JsonValueKind.Object => json.ToString(),
+                        _ => json.ToString()
+                    };
+                }
+
+                p.Add(item.Key, value);
             }
         }
 
