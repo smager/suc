@@ -1,4 +1,4 @@
-﻿using Dapper;
+﻿using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using SmagerUp.Core.API.DTOs;
 using static Dapper.SqlMapper;
 
@@ -11,10 +11,10 @@ public class ClientDataRepository :BaseDataRepository, IClientDataRepository {
         _clientDb = clientDb;
     }
 
-    public async Task<object> ExecuteAsync(Guid clientId,Guid userId,DataRequest request){
+    public async Task<object> ExecuteAsync(string ApiKey,Guid userId,DataRequest request){
         try {
-            this.connection = _clientDb.CreateConnection(clientId);
-            this.clientId = clientId;
+            this.connection = _clientDb.CreateConnection(ApiKey);
+            this.ApiKey= ApiKey;
 
             var action =   await GetByCodeAsync(request.ActionCode);
             return  await RunActionAsync(userId,request,action);

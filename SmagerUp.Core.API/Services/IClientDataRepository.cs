@@ -1,10 +1,11 @@
-﻿using SmagerUp.Core.API.DTOs;
+﻿using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using SmagerUp.Core.API.DTOs;
 
 namespace SmagerUp.Core.API.Data;
 
 public interface IClientDataRepository {
     Task<object> ExecuteAsync(
-        Guid clientId,
+        string apiKey,
         Guid userId,
         DataRequest request);    
 

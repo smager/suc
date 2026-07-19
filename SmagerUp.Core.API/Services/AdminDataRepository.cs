@@ -1,13 +1,13 @@
 ﻿using SmagerUp.Core.API.DTOs;
 using static Dapper.SqlMapper;
 
-namespace SmagerUp.Core.API.Data.Core;
+namespace SmagerUp.Core.API.Data.Admin;
 
-public class CoreDataRepository : BaseDataRepository, ICoreDataRepository
+public class AdminDataRepository : BaseDataRepository, ICoreDataRepository
 {
-    private readonly CoreDbContext _ctx;
+    private readonly AdminDbContext _ctx;
 
-    public CoreDataRepository(CoreDbContext ctx)
+    public AdminDataRepository(AdminDbContext ctx)
     {
         _ctx = ctx;
         this.connection = _ctx.CreateConnection();

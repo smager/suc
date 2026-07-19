@@ -1,7 +1,7 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using SmagerUp.Core.API.DTOs.Client;
+using SmagerUp.Core.API.DTOs;
+using SmagerUp.Core.API.Models;
 using SmagerUp.Core.API.Models.Client;
-using SmagerUp.Core.API.Models.Core;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -18,17 +18,16 @@ public class TokenService
     }
 
 
-    public TokenResponseDto GenerateTokens(bool isHostAccess, Client client, User user, int accessTokenExpires, int refreshTokenExpires )
+    public TokenResponseDto GenerateTokens(string ApiKey, User user, int accessTokenExpires, int refreshTokenExpires )
     {
-        var accessToken = GenerateAccessToken(isHostAccess,client, user, accessTokenExpires);
-        var refreshToken = GenerateRefreshToken(isHostAccess, client, user, refreshTokenExpires);
+        var accessToken = GenerateAccessToken(ApiKey, user, accessTokenExpires);
+        var refreshToken = GenerateRefreshToken(ApiKey,user, refreshTokenExpires);
 
         return (
                 new TokenResponseDto
                 {
                     AccessToken = accessToken,
                     RefreshToken = refreshToken,
-                    IsHostAccess = isHostAccess,
                     AccessTokenExpires = DateTime.UtcNow.AddMinutes(accessTokenExpires),
                     RefreshTokenExpires=DateTime.UtcNow.AddDays(refreshTokenExpires)  
 
@@ -38,16 +37,14 @@ public class TokenService
     }
 
 
-    public string GenerateAccessToken(bool isHostAccess,Client client, User user, int accessTokenExpires)
+    public string GenerateAccessToken(string ApiKey, User user, int accessTokenExpires)
     {
         var claims = new[]
         {
             new Claim("TokenType", "Access"),
-            new Claim("ClientId", client.ClientId.ToString()),
-            new Claim("ApiKey", client.ApiKey.ToString()),
             new Claim("UserId", user.UserId.ToString()),
             new Claim("UserName", user.UserName),
-            new Claim("IsHostUser", isHostAccess.ToString()),
+            new Claim("ApiKey", ApiKey),
             new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
             new Claim(ClaimTypes.Name, user.UserName),
             new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
@@ -56,16 +53,14 @@ public class TokenService
         return GenerateJwtToken(claims,DateTime.UtcNow.AddMinutes(accessTokenExpires));
     }
 
-    public string GenerateRefreshToken(bool isHostAccess,Client client, User user, int refreshTokenExpires)
+    public string GenerateRefreshToken(string ApiKey, User user, int refreshTokenExpires)
     {
         var claims = new[]
         {
             new Claim("TokenType", "Refresh"),
-            new Claim("ClientId", client.ClientId.ToString()),
-            new Claim("ApiKey", client.ApiKey.ToString()),
             new Claim("UserId", user.UserId.ToString()),
             new Claim("UserName", user.UserName),
-            new Claim("IsHostUser", isHostAccess.ToString()),
+            new Claim("ApiKey", ApiKey),
             new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
         };
 

@@ -17,8 +17,8 @@ public class DataController : SucController
     }
 
     [HttpPost("execute")]
-    public async Task<IActionResult> Execute([FromBody] DataRequest request){
-        return Ok( await _data.ExecuteAsync(ClientId,UserId,request));
+    public async Task<IActionResult> Execute([FromBody] DataRequest request) {
+        return Ok(await _data.ExecuteAsync(ApiKey, UserId, request));
     }
- 
+
 } 

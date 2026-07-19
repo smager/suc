@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace SmagerUp.Core.API.Controllers.Core;
 
 [Authorize]
-[Route("core/files")]
+[Route("admin/files")]
 public class FileController : SucController
 {
     [HttpGet("info")]

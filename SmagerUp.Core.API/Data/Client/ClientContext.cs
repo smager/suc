@@ -1,6 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
-using SmagerUp.Core.API.Data.Core;
+using SmagerUp.Core.API.Data.Admin;
 using SmagerUp.Core.API.Services;
 using System.Data;
 
@@ -9,27 +9,27 @@ namespace SmagerUp.Core.API.Data.Client;
 public class ClientDbContext : IClientDbResolver
 {
     private readonly ILogger<ClientDbContext> _log;
-    private readonly CoreDbContext _core;
+    private readonly AdminDbContext _core;
     private readonly IEncryptionService _encryption;
 
-    public ClientDbContext(ILogger<ClientDbContext> log, IHttpContextAccessor http, CoreDbContext core, IEncryptionService encryption   )
+    public ClientDbContext(ILogger<ClientDbContext> log, IHttpContextAccessor http, AdminDbContext core, IEncryptionService encryption   )
     {
         _log = log; 
         _core = core; 
         _encryption = encryption;
     }
 
-    public IDbConnection CreateConnection(Guid ClientId)
+    public IDbConnection CreateConnection(string ApiKey)
     {
         using var coreConn = _core.CreateConnection();
 
         var cs = coreConn.QuerySingleOrDefault<string>(
-            "SELECT dbo.GetConnectionString(@ClientId)", new { ClientId });
+            "SELECT dbo.GetConnectionString(@ApiKey)", new { ApiKey });
 
         var decryptedCS = _encryption.Decrypt(cs);   
 
         if (string.IsNullOrWhiteSpace(cs))
-            throw new InvalidOperationException($"Connection string not found for client {ClientId}");
+            throw new InvalidOperationException($"Connection string not found for ApiKey {ApiKey}");
 
         _log.LogInformation("Resolved client connection string: {cs}", cs);
         // optional quick test

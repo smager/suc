@@ -6,7 +6,7 @@ using SmagerUp.Core.API.DTOs;
 namespace SmagerUp.Core.API.Controllers.Core;
 
 [ApiController]
-[Route("core/data")]
+[Route("admin/data")]
 [Authorize]
 public class DataController : SucController
 {

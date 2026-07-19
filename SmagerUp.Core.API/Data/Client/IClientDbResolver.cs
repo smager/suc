@@ -2,6 +2,6 @@
 namespace SmagerUp.Core.API.Data.Client; 
 public interface IClientDbResolver
 {
-    IDbConnection CreateConnection(Guid ClientId);
+    IDbConnection CreateConnection(string ApiKey);
 }
 

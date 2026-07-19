@@ -2,15 +2,15 @@
 using SmagerUp.Core.API.Services;
 using System.Data;
 
-namespace SmagerUp.Core.API.Data.Core;
+namespace SmagerUp.Core.API.Data.Admin;
 
-public class CoreDbContext
+public class AdminDbContext
 {
     private readonly IConfiguration _config;
     private readonly IEncryptionService _encryption;
     private readonly string _connectionString;
 
-    public CoreDbContext(IConfiguration config,IEncryptionService encryption)
+    public AdminDbContext(IConfiguration config,IEncryptionService encryption)
     {
         _encryption= encryption;
         _config = config;

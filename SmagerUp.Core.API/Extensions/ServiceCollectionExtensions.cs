@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.DataProtection;
 using SmagerUp.Core.API.Data;
+using SmagerUp.Core.API.Data.Admin;
 using SmagerUp.Core.API.Data.Client;
-using SmagerUp.Core.API.Data.Core;
 using SmagerUp.Core.API.Services;
 
 namespace SmagerUp.Core.API.Extensions;
@@ -13,15 +13,13 @@ public static class ServiceCollectionExtensions
 
         //data
 
-        services.AddScoped<CoreDbContext>(); // Register CoreDbContext as scoped
+        services.AddScoped<AdminDbContext>(); // Register AdminDbContext as scoped
         services.AddScoped<IClientDbResolver, ClientDbContext>();
-        services.AddScoped<HostRepository>();
         services.AddScoped<ClientRepository>();
-        services.AddScoped<CoreRepository>();
-        services.AddScoped<UserRepository>();
+        services.AddScoped<AdminRepository>();
 
         services.AddScoped<IClientDataRepository, ClientDataRepository>();
-        services.AddScoped<ICoreDataRepository, CoreDataRepository>();
+        services.AddScoped<ICoreDataRepository, AdminDataRepository>();
 
         //security
         services.AddSingleton<TokenService>();

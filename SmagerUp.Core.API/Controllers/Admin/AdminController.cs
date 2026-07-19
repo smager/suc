@@ -4,17 +4,17 @@ using SmagerUp.Core.API.DTOs;
 using SmagerUp.Core.API.Services;
 using System.Text.Json;
 
-namespace SmagerUp.Core.API.Controllers.Core;
+namespace SmagerUp.Core.API.Controllers.Admin;
 
 [ApiController]
-[Route("core")]
-public class CoreController : SucController
+[Route("admin")]
+public class AdminController : SucController
 {
     private readonly IEncryptionService _encryption;
     private readonly ICoreDataRepository _data;
     private readonly IPasswordService _passwordService;
 
-    public CoreController(ICoreDataRepository data, IEncryptionService encryption, IPasswordService passwordService)
+    public AdminController(ICoreDataRepository data, IEncryptionService encryption, IPasswordService passwordService)
     {
         _encryption = encryption;
         _data = data;

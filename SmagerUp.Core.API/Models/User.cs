@@ -1,4 +1,4 @@
-﻿namespace SmagerUp.Core.API.Models.Client;
+﻿namespace SmagerUp.Core.API.Models;
 
 public class User : LogColumns
 {
