@@ -255,7 +255,7 @@ $("#frmRegister").on("submit", async function(e){
 
     let payload = {
 
-        actionCode: "CL-5D8B-32DB",
+        actionCode: "US-20EE-A020",
         parameters: {
 
             CompanyName: $("#txtCompanyName").val(),
@@ -263,17 +263,14 @@ $("#frmRegister").on("submit", async function(e){
             LastName: $("#txtLastName").val(),
             EmailAdd: $("#txtEmail").val(),
             UserName: $("#txtUserName").val(),
-            PasswordHash: $("#txtPassword").val(),
-            ClientURL: window.location.origin
+            PasswordHash: $("#txtPassword").val()
         }
     };
-
-    console.log(payload);
-
+    //console.log(payload);
 
      var clientInfo = su.getClientConfig();
      let data = await su.api.post(
-                clientInfo.apiUrl + "/core/signup",
+                clientInfo.apiUrl + "/admin/signup",
                 payload
             );
 
@@ -282,7 +279,7 @@ $("#frmRegister").on("submit", async function(e){
         var _body = await su.getTemplate("p/templates/verify-email.html", 
             {
                 ContactName: payload.parameters.FirstName + " " + payload.parameters.LastName,
-                VerifyLink: su.config.baseUrl + "p/verify-email?token=" + data.result.UserId,
+                VerifyLink: su.config.pageUrl + "verify-email?token=" + data.result.UserId,
                 Year: new Date().getFullYear()
             }
        );
@@ -298,7 +295,7 @@ $("#frmRegister").on("submit", async function(e){
             su.msgBox.success("Account created successfully. Please check your email for verification.");
             setTimeout(() => {
                 window.location.replace(window.location.origin);
-            }, 5000);
+            }, 10000);
 
      } else {
         su.msgBox.error("Error creating account: " + (data.message || "Unknown error"));

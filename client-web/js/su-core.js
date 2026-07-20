@@ -1,9 +1,11 @@
 (function (window) {
+    const _originUrl = window.location.origin;
     const su = {
          version: "1.0.0"
         ,config: {
-             baseUrl        : window.location.origin 
-            ,executeUrl  : "/client/data/execute"            
+             baseUrl    : _originUrl  + "/#/"
+            ,pageUrl    : _originUrl  + "/#/p/"
+            ,executeUrl : "/client/data/execute"            
         }
 
         ,ready(fn) {

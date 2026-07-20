@@ -16,7 +16,7 @@ public abstract class BaseDataRepository {
     public async Task<ActionInfo?> GetByCodeAsync(string? ActionCode)
     {
         var sp = "dbo.su_actions_sel";
-        if (ApiKey == string.Empty) sp = "dbo.actions_sel";
+        if (ApiKey == null || ApiKey == string.Empty) sp = "dbo.actions_sel";
 
         return await this.connection.QueryFirstOrDefaultAsync<ActionInfo>(sp, new { ActionCode }, commandType:CommandType.StoredProcedure);
     }
