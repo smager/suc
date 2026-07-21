@@ -1,56 +1,41 @@
-(function (su) {
-    if (!su) throw new Error("su-core.js is required.");
-    su.msgBox   = {
-
+(function (global) {
+    const exports = {
+         version: "1.0.0"
+        ,dialog: null,
         async init() {
+            if (this.msgBox)
+                return;
+            const html = await su.getHtmlTemplate("p/templates/msg-box.html");
+            document.body.insertAdjacentHTML("beforeend", html);
+            this.msgBox = new bootstrap.Modal(
+                document.getElementById("bsMsgBox")
+            );
+            this.title = document.getElementById("msgTitle");
+            this.body = document.getElementById("msgBody");
+        },
 
-            var _msgboxHtml = await su.getHtmlTemplate("p/templates/msgbox.html");
+        async show(title, message) {
+            await this.init();
+            this.title.innerHTML = title;
+            this.body.innerHTML = message;
+            this.msgBox.show();
 
-            if($("#msgbox").length == 0){
-                $("#app").append(_msgboxHtml);
-                su.msgBox.toastTitle =  document.getElementById("toastTitle");
-                su.msgBox.toastMessage = document.getElementById("toastMessage");
-                su.msgBox.msgToast = document.getElementById("msgToast");
+        },
 
-            }        
-   
+        async success(message) {
+            await this.show("Success", message);
+
+        },
+
+        async error(message) {
+            await this.show("Error", message);
+
+        },
+
+        async info(message) {
+            await this.show("Infomation", message);
         }
-        ,async show(title, body) {
-           await this.init();
-           su.msgBox.setText(title,body);
-           let toast = new bootstrap.Toast(su.msgBox.msgToast);
-           toast.show();
-        }
-        ,async success(body) {
-           await this.init();
-           su.msgBox.setText("Success",body);
-           su.msgBox.toastMessage.innerHTML = body;
-            let toast = new bootstrap.Toast(su.msgBox.msgToast);
-            toast.show();
-        }
-
-        ,async error(body) {
-           await this.init();
-           su.msgBox.setText("Error",body);
-           su.msgBox.toastMessage.innerHTML = body;
-           let toast = new bootstrap.Toast(su.msgBox.msgToast);
-           toast.show();
-        }
-
-        ,async info(body) {
-           await this.init();
-           su.msgBox.setText("Infomation",body);
-           su.msgBox.toastMessage.innerHTML = body;
-           let toast = new bootstrap.Toast(su.msgBox.msgToast);
-           toast.show();
-        }
-
-        , setText(title, body){
-            su.msgBox.toastTitle.innerHTML = title;
-            su.msgBox.toastMessage.innerHTML = body;
-        }
-
-        
-    }
-
-})(window.su);
+    };
+    if (!global) throw new Error("su-core.js is required.");
+    global.msgBox = exports;     
+})(su);

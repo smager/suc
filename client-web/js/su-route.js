@@ -1,7 +1,8 @@
- 
+(function () { 
+
 class Router {
     constructor() {
-        this.currentIndex=0;
+       // this.currentIndex=0;
         window.addEventListener(
             "hashchange",
             () => this.load()
@@ -107,4 +108,4 @@ class Router {
 
 new Router();
 
- 
+})();

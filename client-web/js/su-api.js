@@ -1,7 +1,4 @@
-(function (su) {
-
-    if (!su) throw new Error("su-core.js is required.");
-
+(function (global) {
     const buildHeaders = () => {
 
         const headers = {
@@ -18,9 +15,9 @@
         return headers;
     };
 
-    su.api = {
-
-        async post(url, data = {}) {
+    const exports = {
+        version: "1.0.0"
+        ,async post(url, data = {}) {
 
             const res =
                 await fetch(url, {
@@ -54,8 +51,6 @@
             return await res.json();
         },
 
-
-
         async execute(request) {
             var clientInfo = su.getClientConfig();
             return await this.post(
@@ -82,5 +77,7 @@
         }
 
     }
+    if (!global) throw new Error("su-core.js is required.");
+    global.api = exports;
 
-})(window.su);
+})(su);

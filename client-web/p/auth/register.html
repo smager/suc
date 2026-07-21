@@ -236,20 +236,23 @@
 
 <script>
  
+ async function init() {
+    await su.loader.loadScript("js/su-form.js");
+ }
 
-
+init();
 
 $("#frmRegister").on("submit", async function(e){
 
     e.preventDefault();
 
     if(!$("#chkTerms").prop("checked")){
-        alert("Please accept Terms and Conditions.");
+        su.msgBox.info("Please accept Terms and Conditions.");
         return;
     }
 
     if($("#txtPassword").val() !== $("#txtConfirmPassword").val()){
-        alert("Passwords do not match.");
+        su.msgBox.info("Passwords do not match.");
         return;
     }
 
@@ -266,16 +269,14 @@ $("#frmRegister").on("submit", async function(e){
             PasswordHash: $("#txtPassword").val()
         }
     };
-    //console.log(payload);
-
      var clientInfo = su.getClientConfig();
+
      let data = await su.api.post(
                 clientInfo.apiUrl + "/admin/signup",
                 payload
             );
 
      if(data && data.ok){
-        console.log(data.result);            
         var _body = await su.getTemplate("p/templates/verify-email.html", 
             {
                 ContactName: payload.parameters.FirstName + " " + payload.parameters.LastName,
@@ -285,29 +286,27 @@ $("#frmRegister").on("submit", async function(e){
        );
 
         var _emailParams = {
-                "to":payload.parameters.EmailAdd
-                ,"subject": "Verify Your SmagerUp Account"
-                ,"body": _body
-            
-            }
+            "to":payload.parameters.EmailAdd
+            ,"subject": "Verify Your SmagerUp Account"
+            ,"body": _body
+        
+        }
+        su.form.clear( document.querySelector("#frmRegister"))
 
-            await su.api.sendEmail(_emailParams);
-            su.msgBox.success("Account created successfully. Please check your email for verification.");
-            setTimeout(() => {
-                window.location.replace(window.location.origin);
-            }, 10000);
-
+        await su.api.sendEmail(_emailParams);
+        su.msgBox.success("Account created successfully. Please check your email for verification.");
+        setTimeout(() => {
+            window.location.replace(window.location.origin);
+        }, 5000);
+             
      } else {
         su.msgBox.error("Error creating account: " + (data.message || "Unknown error"));
      }
-    //console.log(result);
 
 });
 
 $("#btnGoogle").on("click", function(){
-
     // Google Auth Here
-
 });
 
 </script>

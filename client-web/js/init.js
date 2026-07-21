@@ -1,66 +1,76 @@
-window.su = {
+(function (global) {
+    "use strict";
+    const su = Object.create(null);
+    // private
+    const modules = Object.create(null);
+    su.register = function (name, module) {
 
-    async init() {
-        this.loadCss("https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css");
-        this.loadCss("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css");
-        this.loadCss("css/site.css");
+        if (modules[name])
+            throw new Error(`Module '${name}' already exists.`);
 
-        await this.loadScript("https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.8/handlebars.min.js");
-        await this.loadScript("https://code.jquery.com/jquery-3.7.1.min.js");
-        await this.loadScript("https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js");
-        await this.loadScript("js/su-core.js");
-        await this.loadScript("js/su-api.js");
-        await this.loadScript("js/su-route.js");
-        await this.loadScript("js/su-msgbox.js");
+        modules[name] = module;
+        su[name] = module;
+    };
+    global.su = su;
 
-        this.applyTheme();
-    }
-    ,applyTheme() {
-        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)");
-        document.documentElement.setAttribute("data-bs-theme",prefersDark.matches ? "dark" : "light");
-        prefersDark.addEventListener("change", this.applyTheme.bind(this));
-    }
-    ,async loadScript(src) {
+})(globalThis);
 
-        return new Promise((resolve, reject) => {
 
-            const s = document.createElement("script");
-            s.src = `${src}?t=${Date.now()}`;
-            s.onload = resolve;
-            s.onerror = reject;
-            document.body.appendChild(s);
-        });
+(function (global) {    
+    const exports = {
+         version: "1.0.0"
+        ,async init() {
+            this.loadCss("https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css");
+            this.loadCss("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css");
+            this.loadCss("css/site.css");
 
-    }
-    ,async loadCss(url) {
+            await this.loadScript("https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.8/handlebars.min.js");
+            await this.loadScript("https://code.jquery.com/jquery-3.7.1.min.js");
+            await this.loadScript("https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js");
+            await this.loadScript("js/su-core.js");
+            await this.loadScript("js/su-api.js");
+            await this.loadScript("js/su-route.js");
+            await this.loadScript("js/su-msgBox.js");
 
-        return new Promise((resolve, reject) => {
+            this.applyTheme();
+        }
+        ,applyTheme() {
+            const prefersDark = window.matchMedia("(prefers-color-scheme: dark)");
+            document.documentElement.setAttribute("data-bs-theme", prefersDark.matches ? "dark" : "light");
+            prefersDark.addEventListener("change", this.applyTheme.bind(this));
+        }
+        ,async loadScript(src) {
+            return new Promise((resolve, reject) => {
+                const s = document.createElement("script");
+                s.src = `${src}?t=${Date.now()}`;
+                s.onload = resolve;
+                s.onerror = reject;
+                document.body.appendChild(s);
+            });
+        },
 
-            // Prevent duplicate loading
-            const existing =
-                document.querySelector(
-                    `link[href*="${url}"]`
-                );
+        async loadCss(url) {
+            return new Promise((resolve, reject) => {
+                // Prevent duplicate loading
+                const existing = document.querySelector(`link[href*="${url}"]`);
 
-            if (existing) {
-                resolve();
-                return;
-            }
+                if (existing) {
+                    resolve();
+                    return;
+                }
 
-            const link =document.createElement("link");
+                const link = document.createElement("link");
+                link.rel = "stylesheet";
+                link.href = url;
 
-            link.rel = "stylesheet";
-            link.href = url;
+                link.onload = resolve;
+                link.onerror = reject;
 
-            link.onload = resolve;
-            link.onerror = reject;
+                document.head.appendChild(link);
+            });
+        }
+    };
+    global.loader = exports; 
+})(su);
 
-            document.head.appendChild(link);
-
-        });
-
-    },    
-
-};
-
-su.init();
+su.loader.init();

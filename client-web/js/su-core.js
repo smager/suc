@@ -1,10 +1,9 @@
-(function (window) {
-    const _originUrl = window.location.origin;
-    const su = {
+(function () {
+    const exports = {
          version: "1.0.0"
         ,config: {
-             baseUrl    : _originUrl  + "/#/"
-            ,pageUrl    : _originUrl  + "/#/p/"
+             baseUrl    : window.location.origin  + "/#/"
+            ,pageUrl    : window.location.origin  + "/#/p/"
             ,executeUrl : "/client/data/execute"            
         }
 
@@ -30,9 +29,8 @@
                 );
             }
 
-            this.config =
-                await response.json();
-
+            this.setConfig(await response.json());
+            
             return this.config;
         }
         
@@ -44,17 +42,12 @@
 
         }
         ,removeClient() {
-            localStorage.removeItem("d257c9nzi2ke");
             localStorage.removeItem("t1685x3kw44p");
             localStorage.removeItem("d4d45f5f84kd");
         }
 
         ,setClientConfig(data) {
-            const { ClientId, ApiKey,ApiUrl } = data || {};
-            localStorage.setItem(
-                "d257c9nzi2ke",
-                ClientId
-            );
+            const { ApiKey,ApiUrl } = data || {};
             localStorage.setItem(
                 "t1685x3kw44p",
                 ApiKey
@@ -66,7 +59,6 @@
         }
         ,getClientConfig() {
             return {
-                clientId: localStorage.getItem("d257c9nzi2ke"),
                   apiKey: localStorage.getItem("t1685x3kw44p"),
                   apiUrl: localStorage.getItem("d4d45f5f84kd")
             };
@@ -112,11 +104,10 @@
             return html;
         }        
 
-
-
     };
 
-    window.su = su;
+    Object.assign(su,exports);
+
     const clientInfo = su.getClientConfig();
     if( clientInfo.clientId == null || clientInfo.apiKey == null || clientInfo.apiUrl   == null ){
         var config = su.loadConfig().then((config) => {
@@ -125,4 +116,4 @@
         });
     };
 
-})(window);
+})();
