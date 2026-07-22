@@ -23,6 +23,9 @@ public static class ServiceCollectionExtensions
 
         //security
         services.AddSingleton<TokenService>();
+
+        
+
         services.AddSingleton<IEncryptionService, EncryptionService>();  
 
         var keysPath = Path.Combine(environment.ContentRootPath, "Keys");
@@ -31,7 +34,7 @@ public static class ServiceCollectionExtensions
             .PersistKeysToFileSystem(new DirectoryInfo(keysPath))
             .SetApplicationName("SmagerUpCore");
 
-        services.AddScoped<IEncryptionService, EncryptionService>();
+        //services.AddScoped<IEncryptionService, EncryptionService>();
         services.AddScoped<IPasswordService, PasswordService>();
 
         //others

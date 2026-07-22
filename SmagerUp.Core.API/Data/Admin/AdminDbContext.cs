@@ -12,6 +12,9 @@ public class AdminDbContext
 
     public AdminDbContext(IConfiguration config,IEncryptionService encryption)
     {
+
+ 
+
         _encryption= encryption;
         _config = config;
         _connectionString = _encryption.Decrypt(_config.GetConnectionString("Default")) 

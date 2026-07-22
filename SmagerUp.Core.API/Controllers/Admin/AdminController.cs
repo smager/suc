@@ -10,13 +10,11 @@ namespace SmagerUp.Core.API.Controllers.Admin;
 [Route("admin")]
 public class AdminController : SucController
 {
-    private readonly IEncryptionService _encryption;
     private readonly ICoreDataRepository _data;
     private readonly IPasswordService _passwordService;
 
-    public AdminController(ICoreDataRepository data, IEncryptionService encryption, IPasswordService passwordService)
+    public AdminController(ICoreDataRepository data, IPasswordService passwordService)
     {
-        _encryption = encryption;
         _data = data;
         _passwordService = passwordService;
     }

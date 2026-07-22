@@ -159,6 +159,7 @@ namespace SmagerUp.Core.API.Services {
                 return EncryptToBytes(Encoding.UTF8.GetBytes(plainText));
             }
 
+
             public byte[] EncryptToBytes(byte[] plainTextBytes)
             {
                 // Add salt at the beginning of the plain text bytes (if needed).
@@ -209,48 +210,42 @@ namespace SmagerUp.Core.API.Services {
             }
             public byte[] DecryptToBytes(byte[] cipherTextBytes)
             {
-                byte[] decryptedBytes = null;
-                byte[] plainTextBytes = null;
-                int decryptedByteCount = 0;
-                int saltLen = 0;
+                using var input = new MemoryStream(cipherTextBytes);
 
-                MemoryStream memoryStream = new MemoryStream(cipherTextBytes);
-                decryptedBytes = new byte[cipherTextBytes.Length];
-
-                // Let's make cryptographic operations thread-safe.
                 lock (this)
                 {
-                    // To perform decryption, we must use the Read mode.
-                    CryptoStream cryptoStream = new CryptoStream(memoryStream,decryptor,CryptoStreamMode.Read);
+                    using var cryptoStream = new CryptoStream(
+                        input,
+                        decryptor,
+                        CryptoStreamMode.Read);
 
-                    // Decrypting data and get the count of plain text bytes.
-                    decryptedByteCount = cryptoStream.Read(decryptedBytes,
-                                                            0,
-                                                            decryptedBytes.Length);
-                    // Release memory.
-                    memoryStream.Close();
-                    cryptoStream.Close();
+                    using var output = new MemoryStream();
+
+                    cryptoStream.CopyTo(output);
+
+                    byte[] decryptedBytes = output.ToArray();
+
+                    int saltLen = 0;
+
+                    if (maxSaltLen > 0 && maxSaltLen >= minSaltLen)
+                    {
+                        saltLen = (decryptedBytes[0] & 0x03) |
+                                    (decryptedBytes[1] & 0x0c) |
+                                    (decryptedBytes[2] & 0x30) |
+                                    (decryptedBytes[3] & 0xc0);
+                    }
+
+                    byte[] plainTextBytes = new byte[decryptedBytes.Length - saltLen];
+
+                    Array.Copy(
+                        decryptedBytes,
+                        saltLen,
+                        plainTextBytes,
+                        0,
+                        plainTextBytes.Length);
+
+                    return plainTextBytes;
                 }
-
-                // If we are using salt, get its length from the first 4 bytes of plain
-                // text data.
-                if (maxSaltLen > 0 && maxSaltLen >= minSaltLen)
-                {
-                    saltLen = (decryptedBytes[0] & 0x03) |
-                                (decryptedBytes[1] & 0x0c) |
-                                (decryptedBytes[2] & 0x30) |
-                                (decryptedBytes[3] & 0xc0);
-                }
-
-                // Allocate the byte array to hold the original plain text (without salt).
-                plainTextBytes = new byte[decryptedByteCount - saltLen];
-
-                // Copy original plain text discarding the salt value if needed.
-                Array.Copy(decryptedBytes, saltLen, plainTextBytes,
-                            0, decryptedByteCount - saltLen);
-
-                // Return original plain text value.
-                return plainTextBytes;
             }
             #endregion
 

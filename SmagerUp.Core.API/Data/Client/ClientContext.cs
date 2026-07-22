@@ -10,13 +10,11 @@ public class ClientDbContext : IClientDbResolver
 {
     private readonly ILogger<ClientDbContext> _log;
     private readonly AdminDbContext _core;
-    private readonly IEncryptionService _encryption;
 
-    public ClientDbContext(ILogger<ClientDbContext> log, IHttpContextAccessor http, AdminDbContext core, IEncryptionService encryption   )
+    public ClientDbContext(ILogger<ClientDbContext> log, IHttpContextAccessor http, AdminDbContext core)
     {
         _log = log; 
         _core = core; 
-        _encryption = encryption;
     }
 
     public IDbConnection CreateConnection(string ApiKey)
@@ -26,7 +24,9 @@ public class ClientDbContext : IClientDbResolver
         var cs = coreConn.QuerySingleOrDefault<string>(
             "SELECT dbo.GetConnectionString(@ApiKey)", new { ApiKey });
 
-        var decryptedCS = _encryption.Decrypt(cs);   
+        var _crypt = new Cryptography();
+        var decryptedCS = _crypt.Decrypt(cs);  
+        _crypt=null;
 
         if (string.IsNullOrWhiteSpace(cs))
             throw new InvalidOperationException($"Connection string not found for ApiKey {ApiKey}");
