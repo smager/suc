@@ -1,0 +1,11 @@
+1. Registration page:
+	-Username/Password
+	-Sign Up with Google
+2. Login page:
+	-Username/Password
+	-Sign In with Google
+3. after registration:
+	-Auto create Client
+	-Auto create Admin User
+	-Generate ApiKey
+	-Generate JWT + RefreshToken

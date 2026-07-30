@@ -171,7 +171,7 @@
                                 for="chkTerms">
 
                                 I agree to the
-                                <a href="#/p/terms">
+                                <a href="#/terms">
                                     Terms and Conditions
                                 </a>
 
@@ -218,7 +218,7 @@
 
                         Already have an account?
 
-                        <a href="#/p/auth/login">
+                        <a href="#/login">
                             Sign In
                         </a>
 
@@ -280,7 +280,7 @@ $("#frmRegister").on("submit", async function(e){
         var _body = await su.getTemplate("p/templates/verify-email.html", 
             {
                 ContactName: payload.parameters.FirstName + " " + payload.parameters.LastName,
-                VerifyLink: su.config.pageUrl + "verify-email?token=" + data.result.UserId,
+                VerifyLink: su.config.baseUrl + "verify-email:[" + data.result.UserId + "]",
                 Year: new Date().getFullYear()
             }
        );

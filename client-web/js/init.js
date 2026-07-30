@@ -30,6 +30,12 @@
             await this.loadScript("js/su-core.js");
             await this.loadScript("js/su-api.js");
             await this.loadScript("js/su-route.js");
+            await su.router.load("js/su-routes.json");
+
+            
+            su.router.start();
+            //console.log("Routes", su.router);
+
             await this.loadScript("js/su-msgBox.js");
 
             this.applyTheme();

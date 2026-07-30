@@ -1,0 +1,43 @@
+[
+    {
+        "page": "home",
+        "view": "home",
+        "default": true
+    },
+    {
+        "page": "features",
+        "view": "home"
+    },    
+    {
+        "page": "login",
+        "view": "login"
+    },
+    {
+        "page": "register",
+        "view": "register"
+    },
+    {
+        "page": "forgot-password",
+        "view": "forgot-password"
+    },
+    {
+        "page": "terms",
+        "view": "terms"
+    },
+    {
+        "page": "verified",
+        "view": "verified"
+    },
+    {
+        "page": "verify-email",
+        "view": "verify-email",
+        "params": [
+            "token"
+        ]
+    },    
+
+    {
+        "page": "dashboard",
+        "view": "dashboard"
+    }
+]
