@@ -3,7 +3,7 @@
          version: "1.0.0"
         ,config: {
              baseUrl    : window.location.origin  + "/#/"
-            ,executeUrl : "/client/data/execute"            
+            //,executeUrl : "/client/data/execute"            
         }
 
         ,ready(fn) {
@@ -62,17 +62,33 @@
                   apiUrl: localStorage.getItem("d4d45f5f84kd")
             };
         }
+
+        ,template: { //html templating 
+            _cache: Object.create(null)
+            ,render(template, data) {
+                return template.replace(/\{\{\s*([\w.]+)\s*\}\}/g, (_, path) => {
+                    const value = path
+                        .split(".")
+                        .reduce((obj, key) => obj?.[key], data);
+                    return value ?? "";
+                });
+            }
+            
+        }
+
         ,async getHtmlTemplate(url) {
-              const response =await fetch(url);
-             const html =await response.text();
-             return html;
+            const cache = this.template._cache;
+            if (cache[url])
+                return cache[url];
+            const response = await fetch(url);
+            if ( ! response.ok)
+                throw new Error(`Unable to load template '${url}'.`);
+            return cache[url] = await response.text();
         }
 
         ,async getTemplate(url, data) {
             var source = await su.getHtmlTemplate(url);
-            var template = Handlebars.compile(source);
-       
-            var html = template(data);
+            var html = su.template.render(source,data);       
             return html;
         }        
 

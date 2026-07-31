@@ -51,10 +51,13 @@
             return await res.json();
         },
 
-        async execute(request) {
+        async execute(request,endpoint=null) {
+            let url = "/client/data/execute";            
+            if(endpoint && endpoint=="admin") url = "/admin/data/execute";         
+
             var clientInfo = su.getClientConfig();
             return await this.post(
-                clientInfo.apiUrl + su.config.executeUrl,
+                clientInfo.apiUrl + url,
                 request
             );
         }

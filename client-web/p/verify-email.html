@@ -8,7 +8,7 @@
     let data = await su.api.post(clientInfo.apiUrl + "/admin/verify-email", { token: token });
     if(data && data.ok && data.result.isActivated){
         var _loginLink = su.config.baseUrl + "login";    
-        var _body = await su.getTemplate("p/templates/welcome-email.html?", 
+        var _body = await su.getTemplate("p/templates/welcome-email.html", 
             {
                 ContactName: data.result.contactName,
                 LoginLink: _loginLink,

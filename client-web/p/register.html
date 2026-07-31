@@ -271,10 +271,7 @@ $("#frmRegister").on("submit", async function(e){
     };
      var clientInfo = su.getClientConfig();
 
-     let data = await su.api.post(
-                clientInfo.apiUrl + "/admin/signup",
-                payload
-            );
+     let data = await su.api.post(clientInfo.apiUrl + "/admin/signup",payload );
 
      if(data && data.ok){
         var _body = await su.getTemplate("p/templates/verify-email.html", 
