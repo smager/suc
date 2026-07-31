@@ -66,14 +66,30 @@
         ,template: { //html templating 
             _cache: Object.create(null)
             ,render(template, data) {
-                return template.replace(/\{\{\s*([\w.]+)\s*\}\}/g, (_, path) => {
-                    const value = path
-                        .split(".")
-                        .reduce((obj, key) => obj?.[key], data);
-                    return value ?? "";
-                });
+                // {{{value}}}  -> Raw HTML
+                template = template.replace(
+                    /\{\{\{\s*([\w.]+)\s*\}\}\}/g,
+                    (_, path) => {
+                        const value = path
+                            .split(".")
+                            .reduce((obj, key) => obj?.[key], data);
+
+                        return value ?? "";
+                    }
+                );
+                // {{value}} -> Normal
+                return template.replace(
+                    /\{\{\s*([\w.]+)\s*\}\}/g,
+                    (_, path) => {
+                        const value = path
+                            .split(".")
+                            .reduce((obj, key) => obj?.[key], data);
+
+                        return value ?? "";
+                    }
+                );
             }
-            
+
         }
 
         ,async getHtmlTemplate(url) {
@@ -90,12 +106,25 @@
             var source = await su.getHtmlTemplate(url);
             var html = su.template.render(source,data);       
             return html;
-        }        
+        }
+        
+        ,async loadPublicTemplates(){           
+            let key ="publicTemplates";
+            let url = "/p/templates/tmplpublic.html";
+            let html =  localStorage.getItem(key);
+            if( ! html){
+                const response = await fetch(url);
+                if ( ! response.ok) throw new Error(`Unable to load template '${url}'.`);
+                html = await response.text();
+                localStorage.setItem(key,html);
+            }            
+        }
+        
 
     };
 
     Object.assign(su,exports);
-
+    su.loadPublicTemplates();
     const clientInfo = su.getClientConfig();
     if( clientInfo.clientId == null || clientInfo.apiKey == null || clientInfo.apiUrl   == null ){
         var config = su.loadConfig().then((config) => {
