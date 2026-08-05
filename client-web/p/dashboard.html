@@ -1,6 +1,4 @@
-<div class="layout">
-
-    
+<div class="layout">     
 <div class="sidebar">
     <div class="logo">
         <a href="/">SmagerUp</a>
@@ -108,8 +106,7 @@
 
 </div>
 
-<main class="content">
-
+<div class="right-content">
 <header class="topbar">
     <button id="sidebar-toggle" class="btn btn-link btn-sidebar-toggle fs-4 p-0 me-3">
         <i class="fa-solid fa-bars"></i>
@@ -134,85 +131,96 @@
         </div>
     </div>
 </header>
-
-<section class="stats">
-    <div class="card stat">
-        <i class="fa-solid fa-users-gear color-users"></i>
-        <div>
-            <h6>Console Users</h6>
-            <h1>1</h1>
+<div class="content">
+    <section class="stats">
+        <div class="card stat">
+            <i class="fa-solid fa-users-gear color-users"></i>
+            <div>
+                <h6>Console Users</h6>
+                <h1>1</h1>
+            </div>
+            <a href="#">Manage Users</a>
         </div>
-        <a href="#">Manage Users</a>
-    </div>
-    <div class="card stat">
-        <i class="fa-solid fa-database color-databases"></i>
-        <div>
-            <h6>Database Connections</h6>
-            <h1>1</h1>
+        <div class="card stat">
+            <i class="fa-solid fa-database color-databases"></i>
+            <div>
+                <h6>Database Connections</h6>
+                <h1>1</h1>
+            </div>
+            <a href="#">Manage Database Connections</a>         
         </div>
-        <a href="#">Manage Database Connections</a>         
-    </div>
-    <div class="card stat">
-        <i class="fa-solid fa-cubes color-applications"></i>
-        <div>
-            <h6>Applications</h6>
-            <h1>2</h1>
+        <div class="card stat">
+            <i class="fa-solid fa-cubes color-applications"></i>
+            <div>
+                <h6>Applications</h6>
+                <h1>2</h1>
+            </div>
+            <a href="#">Manage Applications</a>
         </div>
-        <a href="#">Manage Applications</a>
-    </div>
-    <div class="card stat">
-        <i class="fa-solid fa-chart-line color-api-requests"></i>
-        <div>
-            <h6>API Requests Today</h6>
-                <h1>34K</h1>
-                <small>Today</small>
+        <div class="card stat">
+            <i class="fa-solid fa-chart-line color-api-requests"></i>
+            <div>
+                <h6>API Requests Today</h6>
+                    <h1>34K</h1>
+                    <small>Today</small>
+            </div>
         </div>
+    </section>
+
+    <section class="two-col">
+    <div class="card">
+    <h5>Getting Started</h5>
+    <div class="progress my-3"><div class="progress-bar" style="width:100%"></div></div>
+    <ul>
+    <li>✅ Email Verified</li>
+    <li>✅ Company Profile Completed</li>
+    <li>✅ Database Created</li>
+    <li>✅ Application Created</li>
+    </ul>
     </div>
-</section>
 
-<section class="two-col">
-<div class="card">
-<h5>Getting Started</h5>
-<div class="progress my-3"><div class="progress-bar" style="width:100%"></div></div>
-<ul>
-<li>✅ Email Verified</li>
-<li>✅ Company Profile Completed</li>
-<li>✅ Database Created</li>
-<li>✅ Application Created</li>
-</ul>
+    <div class="card">
+    <h5>Quick Actions</h5>
+    <div class="d-grid gap-3 mt-3">
+    <button class="btn btn-primary">+ New Database Connection</button>
+    <button class="btn btn-primary">+ New Application</button>
+    <button class="btn btn-outline-light">Invite Console User</button>
+    <button class="btn btn-outline-light">View Documentation</button>
+    </div>
+    </div>
+    </section>
+
+    <section class="card">
+    <div class="activity-header">
+    <h5>Recent Activity</h5>
+    <a href="#">View All</a>
+    </div>
+
+    <div class="activity"><strong>Application HR Portal created</strong><br><small>Today • 10:32 AM</small></div>
+    <div class="activity"><strong>Database Production SQL configured</strong><br><small>Today • 10:10 AM</small></div>
+    <div class="activity"><strong>Console user logged in</strong><br><small>Today • 9:45 AM</small></div>
+    <div class="activity"><strong>Company profile updated</strong><br><small>Yesterday</small></div>
+
+    </section>
 </div>
 
-<div class="card">
-<h5>Quick Actions</h5>
-<div class="d-grid gap-3 mt-3">
-<button class="btn btn-primary">+ New Database Connection</button>
-<button class="btn btn-primary">+ New Application</button>
-<button class="btn btn-outline-light">Invite Console User</button>
-<button class="btn btn-outline-light">View Documentation</button>
 </div>
 </div>
-</section>
+<footer class="footer">
+    <div class="footer-content">
+        <span>© 2026 SmagerUp I.T. Solutions. All rights reserved.</span>
 
-<section class="card">
-<div class="activity-header">
-<h5>Recent Activity</h5>
-<a href="#">View All</a>
-</div>
+        <span class="divider">|</span>
 
-<div class="activity"><strong>Application HR Portal created</strong><br><small>Today • 10:32 AM</small></div>
-<div class="activity"><strong>Database Production SQL configured</strong><br><small>Today • 10:10 AM</small></div>
-<div class="activity"><strong>Console user logged in</strong><br><small>Today • 9:45 AM</small></div>
-<div class="activity"><strong>Company profile updated</strong><br><small>Yesterday</small></div>
+        <span>SmagerUp Core v1.0.0</span>
 
-</section>
+        <span class="divider">|</span>
 
-</main>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
- <script>
-
-
+        <span>Environment:</span>
+        <span class="badge environment">Local Test</span>
+    </div>
+</footer>
+<script>
 su.pageReady = function(){
 
     document

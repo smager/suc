@@ -1,50 +1,5 @@
 
 
-
-.btn-sidebar-toggle {
-    color: var(--btn-sidebar-toggle-color);
-}   
-
-.collapsed .nav-item i {
-    font-size: 16pt;
-    padding: 10px 0px;
-}
-
-.layout{
-    display:flex;min-height:100vh
-}
-.layout.collapsed .sidebar{
-    width:55px;
-}
-.layout.collapsed .logo{
-    text-align:center;
-     font-size:18px;
-}
-.layout.collapsed .nav-item span{
-    padding-left:0;
-    padding-right:0;
-    font-size:0;
-    margin:0;
-}
-.collapsed .nav-title {
-    display: none;
-}
- 
-.brand{font-size:30px;font-weight:700}
-.sub{color:#8aa4ff}
-.menu-title{font-size:11px;color:#8c929d;margin:18px 0 8px}
-.menu{padding:12px 14px;border-radius:10px;color:#ddd;text-decoration:none;display:block;margin-bottom:4px}
-.menu:hover,.active{background:#2b313a}
-.spacer{flex:1}
-.logout{background:#822}
-.content{
-    flex:1;
-    padding:10px;
-    transition:.25s;
-}
-.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}
-.top-right{display:flex;gap:10px;align-items:center}
-.plan{background:#198754;padding:10px 16px;border-radius:8px;font-weight:700}
 .stats{
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(220px,1fr));

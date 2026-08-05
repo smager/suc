@@ -31,6 +31,10 @@
     --btn-sidebar-toggle-color: #a6a6a6;
     --bg-card-stat-a-hover: #353b41;
     --color-card-border: #464646;
+
+    --bg-footer-color:#f3f3f3;
+    --border-footer-color:#464646;
+    --border-footer-text-color:#a6a6a6;    
     
 }
 
@@ -63,10 +67,19 @@
     --bg-card-stat-a-hover: #fff;
     --color-card-border: #e5e5e5;
 
+    --bg-footer-color:#f3f3f3;
+    --border-footer-color:#e5e5e5;
+    --border-footer-text-color:#323232;    
+        
+
 
 }
 
 *{box-sizing:border-box}
+div#app {
+    min-height: 100vh;
+}
+
 .modal {
     --bs-modal-header-padding: 10px 8px;
 }
@@ -161,4 +174,91 @@ section#pricing, li.pricing
 .card-header {
     background: var(--bg-header1);
 }
+
+/*layout */
+
+.btn-sidebar-toggle {
+    color: var(--btn-sidebar-toggle-color);
+}   
+
+.collapsed .nav-item i {
+    font-size: 16pt;
+    padding: 10px 0px;
+}
+
+.layout{
+    display:flex;
+}
+.layout.collapsed .sidebar{
+    width:55px;
+}
+.layout.collapsed .logo{
+    text-align:center;
+     font-size:18px;
+}
+.layout.collapsed .nav-item span{
+    padding-left:0;
+    padding-right:0;
+    font-size:0;
+    margin:0;
+}
+.collapsed .nav-title {
+    display: none;
+}
+ 
+.brand{font-size:30px;font-weight:700}
+.sub{color:#8aa4ff}
+.menu-title{font-size:11px;color:#8c929d;margin:18px 0 8px}
+.menu{padding:12px 14px;border-radius:10px;color:#ddd;text-decoration:none;display:block;margin-bottom:4px}
+.menu:hover,.active{background:#2b313a}
+.spacer{flex:1}
+.logout{background:#822}
+.right-content{
+    flex:1;
+    padding:10px;
+    transition:.25s;
+}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}
+.top-right{display:flex;gap:10px;align-items:center}
+.plan{background:#198754;padding:10px 16px;border-radius:8px;font-weight:700}
+/*end of layout */
+
+
+/* footer */
+ .footer {
+    margin-top: auto;
+    padding: 12px 24px;
+    border-top: 1px solid var(--border-footer-color);
+}
+
+.footer-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    font-size: 13px;
+    color: var(--border-footer-text-color);
+}
+
+.footer .divider {
+    color: #4b5563;
+}
+
+.footer .badge {
+    padding: 4px 5px 7px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.footer .badge.environment {
+    background: #163d2a;
+    color: #6ee7b7;
+    border: 1px solid #1f6b47;
+}
+
+/* enf of footer */
+
 
