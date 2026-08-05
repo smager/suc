@@ -21,7 +21,7 @@
          version: "1.0.0"
         ,async init() {
             this.loadCss("https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css");
-            this.loadCss("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css");
+            this.loadCss("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.0/css/all.min.css");
             this.loadCss("css/site.css");
             await this.loadScript("https://code.jquery.com/jquery-3.7.1.min.js");
             await this.loadScript("https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js");

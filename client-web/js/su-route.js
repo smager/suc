@@ -80,6 +80,8 @@
                 script.remove();
             });
 
+             su.pageReady && su.pageReady();
+
             // Scroll section
             if (this._current.sections.length) {
                 const section = this._current.sections.at(-1).name;

@@ -1,332 +1,106 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+<div class="layout">
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<div class="sidebar">
+    <div class="logo">
+        <a href="/">SmagerUp</a>
+    </div>
+ <!--
+    <a class="nav-item active">
+        <i class="fa-solid fa-house"></i>
+        <span title="Dashboard">Dashboard</span>
+    </a>
+-->
+    <!-- Platform -->
 
-<title>Dashboard</title>
+    <div class="nav-group open">
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+        <div class="nav-title">
 
-<style>
+            <span>Platform</span>
 
-body{
-    background:#f5f7fb;
-}
+            <i class="fa-solid fa-chevron-down"></i>
 
-.navbar-brand{
-    font-weight:bold;
-}
+        </div>
 
-.card{
-    border:none;
-    border-radius:12px;
-    box-shadow:0 2px 10px rgba(0,0,0,.08);
-}
+        <div class="nav-body">
 
-.card-title{
-    color:#6c757d;
-    font-size:14px;
-    margin-bottom:10px;
-}
+            <a class="nav-item" title="Database Connections"> <i class="fa-solid fa-database"></i>
+               <span > Database Connections </span>
+            </a>
 
-.value{
-    font-size:24px;
-    font-weight:bold;
-}
-
-.api-key{
-    font-family:Consolas;
-    letter-spacing:1px;
-}
-
-.quick-action .btn{
-    margin-bottom:12px;
-}
-
-.activity li{
-    padding:10px 0;
-    border-bottom:1px solid #eee;
-}
-
-.activity li:last-child{
-    border-bottom:none;
-}
-
-</style>
-
-</head>
-
-<body>
-
-<nav class="navbar navbar-expand-lg bg-white shadow-sm">
-
-    <div class="container">
-
-        <a class="navbar-brand text-primary" href="#">
-            SmagerUp Core
-        </a>
-
-        <div class="ms-auto">
-
-            <span class="me-3">
-                Welcome,
-                <strong>German</strong>
-            </span>
-
-            <button class="btn btn-outline-secondary btn-sm">
-                Logout
-            </button>
+            <a class="nav-item" title="Applications"> <i class="fa-solid fa-cubes"></i>
+                <span > Applications </span>
+            </a>
 
         </div>
 
     </div>
 
-</nav>
+    <!-- Security -->
 
-<div class="container py-4">
+    <div class="nav-group open">
 
-    <h3>
-        Dashboard
-    </h3>
+        <div class="nav-title">
 
-    <p class="text-muted">
-        Welcome back! Your account is active and ready to use.
-    </p>
+            <span>Security</span>
 
-    <div class="row g-3">
-
-        <div class="col-md-3">
-
-            <div class="card p-3">
-
-                <div class="card-title">
-                    Client ID
-                </div>
-
-                <div class="value">
-                    CL-8A29C312
-                </div>
-
-            </div>
+            <i class="fa-solid fa-chevron-down"></i>
 
         </div>
 
-        <div class="col-md-3">
+        <div class="nav-body">
 
-            <div class="card p-3">
-
-                <div class="card-title">
-                    Package
-                </div>
-
-                <div class="value text-primary">
-                    Free
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-3">
-
-            <div class="card p-3">
-
-                <div class="card-title">
-                    API Status
-                </div>
-
-                <div class="value text-success">
-                    Active
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-3">
-
-            <div class="card p-3">
-
-                <div class="card-title">
-                    Users
-                </div>
-
-                <div class="value">
-                    1
-                </div>
-
-            </div>
+            <a class="nav-item" title="Console Users"> <i class="fa-solid fa-users-gear"></i>
+               <span > Console Users </span>
+            </a>
 
         </div>
 
     </div>
 
-    <div class="row mt-4">
+    <!-- Monitoring -->
 
-        <div class="col-lg-8">
+    <div class="nav-group open">
 
-            <div class="card">
+        <div class="nav-title">
 
-                <div class="card-header bg-white">
-                    <strong>API Credentials</strong>
-                </div>
+            <span>Monitoring</span>
 
-                <div class="card-body">
-
-                    <div class="mb-3">
-
-                        <label class="form-label">
-                            Client ID
-                        </label>
-
-                        <input
-                            class="form-control"
-                            readonly
-                            value="CL-8A29C312">
-
-                    </div>
-
-                    <div class="mb-3">
-
-                        <label class="form-label">
-                            API Key
-                        </label>
-
-                        <div class="input-group">
-
-                            <input
-                                id="txtApiKey"
-                                class="form-control api-key"
-                                readonly
-                                type="password"
-                                value="SUC_SK_4E7C9A2B61A45D98C214D74F33A8D12">
-
-                            <button
-                                class="btn btn-outline-secondary"
-                                onclick="toggleKey()">
-
-                                Show
-
-                            </button>
-
-                            <button
-                                class="btn btn-primary"
-                                onclick="copyKey()">
-
-                                Copy
-
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                    <div class="mb-0">
-
-                        <label class="form-label">
-                            Connection String
-                        </label>
-
-                        <textarea
-                            class="form-control"
-                            rows="3"
-                            readonly>Server=...;Database=...;</textarea>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div class="card mt-4">
-
-                <div class="card-header bg-white">
-
-                    <strong>Getting Started</strong>
-
-                </div>
-
-                <div class="card-body">
-
-                    <ol>
-
-                        <li>Copy your Client ID.</li>
-
-                        <li>Copy your API Key.</li>
-
-                        <li>Download the SmagerUp JavaScript SDK.</li>
-
-                        <li>Create your first application.</li>
-
-                        <li>Read the API Documentation.</li>
-
-                    </ol>
-
-                </div>
-
-            </div>
+           <i class="fa-solid fa-chevron-down"></i>
 
         </div>
 
-        <div class="col-lg-4">
+        <div class="nav-body">
 
-            <div class="card quick-action">
+            <a class="nav-item" title="API Requests"> <i class="fa-solid fa-chart-line"></i>
+              <span >API Requests </span>
+            </a>
 
-                <div class="card-header bg-white">
+            <a class="nav-item" title="Activity Logs"> <i class="fa-solid fa-clipboard-list"></i>
+               <span >Activity Logs</span>
+            </a>
 
-                    <strong>Quick Actions</strong>
+        </div>
 
-                </div>
+    </div>
 
-                <div class="card-body d-grid">
+    <!-- Company -->
 
-                    <button class="btn btn-primary">
-                        Create User
-                    </button>
+    <div class="nav-group open">
+        <div class="nav-title">
+            <span>Company</span>
+            <i class="fa-solid fa-chevron-down"></i>
+        </div>
 
-                    <button class="btn btn-outline-primary">
-                        Manage Users
-                    </button>
+        <div class="nav-body">
+            <a class="nav-item" title="Profile"> <i class="fa-solid fa-building"></i>
+                 <span >Profile</span>
+            </a>
 
-                    <button class="btn btn-outline-primary">
-                        Settings
-                    </button>
-
-                    <button class="btn btn-outline-primary">
-                        Documentation
-                    </button>
-
-                </div>
-
-            </div>
-
-            <div class="card mt-4">
-
-                <div class="card-header bg-white">
-
-                    <strong>Recent Activity</strong>
-
-                </div>
-
-                <div class="card-body">
-
-                    <ul class="list-unstyled activity">
-
-                        <li>✔ Email Verified</li>
-
-                        <li>✔ API Key Generated</li>
-
-                        <li>✔ Account Activated</li>
-
-                        <li>✔ First Login</li>
-
-                    </ul>
-
-                </div>
-
-            </div>
+            <a class="nav-item" title="Billing"> <i class="fa-solid fa-file-invoice"></i>
+                <span >Billing</span>
+            </a>
 
         </div>
 
@@ -334,31 +108,137 @@ body{
 
 </div>
 
-<script>
+<main class="content">
 
-function toggleKey(){
+<header class="topbar">
+    <button id="sidebar-toggle" class="btn btn-link btn-sidebar-toggle fs-4 p-0 me-3">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+    <div>
+        <h2>Dashboard</h2>
+        <small>Welcome back, Console User!</small>
+    </div>
 
-    let txt=document.getElementById("txtApiKey");
+    <div class="top-right">
+        <span class="plan">FREE PLAN</span>
+        <button class="btn btn-outline-light">Upgrade Plan</button>
 
-    txt.type=
-        txt.type=="password"
-        ?"text"
-        :"password";
+        <div class="user">
+            <button class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown">
+                Console User
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" href="#">Account Settings</a></li>
+                <li><a class="dropdown-item text-danger" href="#">Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</header>
+
+<section class="stats">
+    <div class="card stat">
+        <i class="fa-solid fa-users-gear color-users"></i>
+        <div>
+            <h6>Console Users</h6>
+            <h1>1</h1>
+        </div>
+        <a href="#">Manage Users</a>
+    </div>
+    <div class="card stat">
+        <i class="fa-solid fa-database color-databases"></i>
+        <div>
+            <h6>Database Connections</h6>
+            <h1>1</h1>
+        </div>
+        <a href="#">Manage Database Connections</a>         
+    </div>
+    <div class="card stat">
+        <i class="fa-solid fa-cubes color-applications"></i>
+        <div>
+            <h6>Applications</h6>
+            <h1>2</h1>
+        </div>
+        <a href="#">Manage Applications</a>
+    </div>
+    <div class="card stat">
+        <i class="fa-solid fa-chart-line color-api-requests"></i>
+        <div>
+            <h6>API Requests Today</h6>
+                <h1>34K</h1>
+                <small>Today</small>
+        </div>
+    </div>
+</section>
+
+<section class="two-col">
+<div class="card">
+<h5>Getting Started</h5>
+<div class="progress my-3"><div class="progress-bar" style="width:100%"></div></div>
+<ul>
+<li>✅ Email Verified</li>
+<li>✅ Company Profile Completed</li>
+<li>✅ Database Created</li>
+<li>✅ Application Created</li>
+</ul>
+</div>
+
+<div class="card">
+<h5>Quick Actions</h5>
+<div class="d-grid gap-3 mt-3">
+<button class="btn btn-primary">+ New Database Connection</button>
+<button class="btn btn-primary">+ New Application</button>
+<button class="btn btn-outline-light">Invite Console User</button>
+<button class="btn btn-outline-light">View Documentation</button>
+</div>
+</div>
+</section>
+
+<section class="card">
+<div class="activity-header">
+<h5>Recent Activity</h5>
+<a href="#">View All</a>
+</div>
+
+<div class="activity"><strong>Application HR Portal created</strong><br><small>Today • 10:32 AM</small></div>
+<div class="activity"><strong>Database Production SQL configured</strong><br><small>Today • 10:10 AM</small></div>
+<div class="activity"><strong>Console user logged in</strong><br><small>Today • 9:45 AM</small></div>
+<div class="activity"><strong>Company profile updated</strong><br><small>Yesterday</small></div>
+
+</section>
+
+</main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+ <script>
+
+
+su.pageReady = function(){
+
+    document
+    .querySelectorAll(".nav-title")
+    .forEach(title=>{
+
+        title.onclick=function(){
+
+            this.parentElement
+                .classList
+                .toggle("open");
+
+        }
+
+    });
+
+    var layout=document.querySelector(".layout");
+    document.getElementById("sidebar-toggle")
+    .onclick=function(){
+        layout.classList.toggle("collapsed");
+        const logo=document.querySelector(".logo");
+        var setName = function(name) {
+            return "<a href='/'>" + name + "</a>";
+        }
+        logo.innerHTML=  layout.classList.contains("collapsed") ? setName("SU"):setName("SmagerUp");
+    };
 
 }
-
-function copyKey(){
-
-    let txt=document.getElementById("txtApiKey");
-
-    navigator.clipboard.writeText(txt.value);
-
-    alert("API Key copied.");
-
-}
-
-</script>
-
-</body>
-</html>
- 
+ </script>
