@@ -202,6 +202,9 @@
     <div class="activity"><strong>Company profile updated</strong><br><small>Yesterday</small></div>
 
     </section>
+
+
+    
 </div>
 
 </div>
@@ -222,19 +225,15 @@
 </footer>
 <script>
 su.pageReady = function(){
-
     document
     .querySelectorAll(".nav-title")
     .forEach(title=>{
-
         title.onclick=function(){
 
             this.parentElement
                 .classList
                 .toggle("open");
-
         }
-
     });
 
     var layout=document.querySelector(".layout");
