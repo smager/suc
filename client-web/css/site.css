@@ -69,10 +69,11 @@
 [data-bs-theme="dark"] {
     --bg-body:var(--gray-900);
     --bg-primary: var(--slate-800);
-    --bg-primary-hover: var(--slate-900);
+    --bg-primary-hover: var(--blue-up-01);
     --bg-top-bar: var(--slate-800);
     --bg-btn: var(--bg-primary);
-    --text:var(--gray-100);
+    --text:var(--blue-up-01);
+    --texthover:var(--blue-up-05);
     --bg-hero: linear-gradient(135deg, var(--slate-800), var(--slate-700));
     --bg-card:var(--gray-850);
     --btn-1: var(--slate-850);
@@ -83,24 +84,21 @@
     --btn-border-2:var(--slate-750); 
     --btn-border-3:var(--slate-800); 
  
-    /*
-     .btn-outline-dark {
-        --bs-btn-color: #d7d7d7;
-        --bs-btn-border-color: #8c8c8c66;
-        --bs-btn-hover-color: #fff;
-    }    
-    */
+    --bg-outline-primary:var(--blue-up-01);
+    --btn-outline-hover-color:var(--gray-150);
+    
 }
 
 [data-bs-theme="light"] {
     --bg-body:var(--gray-200);
     --bg-primary: var(--slate-800);
-    --bg-primary-hover: var(--slate-900);
+    --bg-primary-hover: var(--blue-up-03);
+    --btn-hover-color:var( --slate-150)
     --bg-top-bar: var(--gray-100);
     --bg-primary: #3b639e;
-    --bg-primary-hover: #1d2633;
     --bg-btn: var(--bg-primary);
-    --text:var(--gray-50);
+    --text:var(--blue-up-01);
+    --texthover:var(--blue-up-05);
     --bg-card:var(--gray-50);
     --btn-1:var(--blue-right-01); 
     --btn-2:var(--blue-down-01); 
@@ -133,6 +131,9 @@
     --bg-footer-color:#fff;
     --border-footer-color:#e5e5e5;
     --border-footer-text-color:#323232;    
+
+    --bg-outline-primary:var(--blue-up-01);
+    --btn-outline-hover-color:var(--gray-150);
  
 }
 
@@ -173,10 +174,17 @@ body{
     background:var(--bg-body);
     color:var(--bs-body-color);}
 
+
 a {
-    color:var(--color-2);
+    text-decoration: none;
+    color: var(--text);
+}
+
+a:hover {
+    color: var(--texthover);
     text-decoration: underline;
 }
+
 nav.navbar {
     background: var(--bs-body-bg);
 }
@@ -201,11 +209,10 @@ section#pricing, li.pricing
 }
 
 .btn-primary {
-    --bs-btn-color: #fff;
     --bs-btn-bg: var(--bg-primary);
     --bg-btn: var(--bg-primary);
     --bs-btn-border-color: var(--border-primary);
-    --bs-btn-hover-color: var(--color-primary-hover);
+    --bs-btn-hover-color: var(btn-hover-color);
     --bs-btn-hover-bg: var(--bg-primary-hover);
     --bs-btn-hover-border-color:var(--border-primary-hover);
     --bs-btn-focus-shadow-rgb: 49, 132, 253;
@@ -217,6 +224,15 @@ section#pricing, li.pricing
     --bs-btn-disabled-bg:var(--bg1);
     --bs-btn-disabled-border-color:var(--bg1-down1);
 }
+
+.btn-outline-light {
+    --bs-btn-color: var(--bg-outline-primary);
+    --bs-btn-border-color: var(--bg-outline-primary);
+    --bs-btn-hover-color:var(--btn-outline-hover-color);
+    --bs-btn-hover-bg: var(--bg-outline-primary);
+    --bs-btn-hover-border-color: var(--bg-outline-primary);
+}
+
 .card {
   --bs-card-bg: var(--bg-card);
   --bs-card-color: var(--card-color);

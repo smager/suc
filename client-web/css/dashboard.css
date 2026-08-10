@@ -15,17 +15,14 @@
 }
 
 .card.stat a {
-    border: solid 1pt var(--btn-border-1);
     text-align: center;
     text-decoration: none;
     padding: 5px;
     border-radius: 6px;
-    background-color: var(--btn-1);
-    color:var(--text);
 }
 
 .card.stat a:hover {
-    background-color: var(--btn-2);
+    text-decoration: underline;
 }
 
 .card.stat i {
